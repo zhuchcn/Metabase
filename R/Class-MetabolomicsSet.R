@@ -120,7 +120,6 @@ setValidity(
     method = function(object){
         if(!isClass(object@experiment_data, "MetabolomicsExperimentDataOrNULL"))
             return("The experiment data must be an object of the MetabolomicsExperimentData class")
-        callNextMethod(object)
     }
 )
 ################################################################################
@@ -158,7 +157,6 @@ MetabolomicsSet = function(
                  sample_table = sample_table,
                  feature_data = feature_data,
                  experiment_data = experiment_data)
-    validObject(object)
     return(object)
 }
 

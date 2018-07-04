@@ -1,9 +1,5 @@
 # load("/Users/chenghaozhu/Box Sync/UC Davis/Right Now/Researches/Zivkovic Lab/Fast Food Study/Data/between_assays_analysis/data/hdl_structure_and_function.Rdata")
 #
-# edata = assayDataNew(conc=lipidome$edata)
-# pdata = new("AnnotatedDataFrame", data = lipidome$pdata)
-# fdata = new("AnnotatedDataFrame", data = lipidome$fdata)
-#
 # edata = conc_table(as.matrix(lipidome$edata))
 # pdata = sample_table(lipidome$pdata)
 # fdata = feature_data(lipidome$fdata)

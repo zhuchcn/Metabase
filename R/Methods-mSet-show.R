@@ -14,7 +14,7 @@ setMethod(
         col.show = min(ncol(object), 6)
 
         cat(str_pad(">>>>>> Concentration Table <<<<<<", 50, "left", " ") %+%
-            str_pad("\nconc_table()", 45, "right", " ") %+%
+            str_pad("\nconc_table()", 35, "right", " ") %+%
             "[ " %+%
             str_pad(n.col, 3, "left", " ") %+%
             " features and " %+%
@@ -45,7 +45,7 @@ setMethod(
         col.show = min(ncol(object), 6)
 
         cat(str_pad(">>>>>> Sample Table <<<<<<", 45, "left", " ") %+%
-            str_pad("\nsample_table()", 38, "right", " ") %+%
+            str_pad("\nsample_table()", 28, "right", " ") %+%
             "[ " %+%
             str_pad(n.col, 3, "left", " ") %+%
             " samples and " %+%
@@ -76,7 +76,7 @@ setMethod(
         col.show = min(ncol(object), 6)
 
         cat(str_pad(">>>>>> Feature Data <<<<<<", 48, "left", " ") %+%
-            str_pad("\nfeature_data()", 34, "right", " ") %+%
+            str_pad("\nfeature_data()", 24, "right", " ") %+%
             "[ " %+%
             str_pad(n.col, 3, "left", " ") %+%
             " features and " %+%
