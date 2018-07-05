@@ -16,9 +16,9 @@ setMethod(
         cat(str_pad(">>>>>> Concentration Table <<<<<<", 50, "left", " ") %+%
             str_pad("\nconc_table()", 35, "right", " ") %+%
             "[ " %+%
-            str_pad(n.col, 3, "left", " ") %+%
-            " features and " %+%
             str_pad(n.row, 3, "left", " ") %+%
+            " features and " %+%
+            str_pad(n.col, 3, "left", " ") %+%
             " samples ]\n\n" %+%
             "Showing the first " %+%
             row.show %+% " samples and " %+%
@@ -47,9 +47,9 @@ setMethod(
         cat(str_pad(">>>>>> Sample Table <<<<<<", 45, "left", " ") %+%
             str_pad("\nsample_table()", 28, "right", " ") %+%
             "[ " %+%
-            str_pad(n.col, 3, "left", " ") %+%
-            " samples and " %+%
             str_pad(n.row, 3, "left", " ") %+%
+            " samples and " %+%
+            str_pad(n.col, 3, "left", " ") %+%
             " sample variables ]\n\n" %+%
             "Showing the first " %+%
             col.show %+% " samples and " %+%
@@ -78,9 +78,9 @@ setMethod(
         cat(str_pad(">>>>>> Feature Data <<<<<<", 48, "left", " ") %+%
             str_pad("\nfeature_data()", 24, "right", " ") %+%
             "[ " %+%
-            str_pad(n.col, 3, "left", " ") %+%
-            " features and " %+%
             str_pad(n.row, 3, "left", " ") %+%
+            " features and " %+%
+            str_pad(n.col, 3, "left", " ") %+%
             " feature variables ]\n\n" %+%
             "Showing the first " %+%
             row.show %+% " samples and " %+%

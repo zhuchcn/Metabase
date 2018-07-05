@@ -23,11 +23,6 @@
 #     abstract = NULL
 # )
 #
-# meta_mset = new(
-#     "meta-mSet",
-#     conc_table = edata,
-#     sample_table = pdata,
-#     feature_data = fdata,
-#     experiment_data = experiment,
-#     StudyDesign = study_design
-# )
+# mset_sum = summarize_samples(mset, c("TX", "Day"))
+#
+# design = model.matrix(data = as(sample_table(mset), "data.frame"), ~TX*Day + Subj + 1)
