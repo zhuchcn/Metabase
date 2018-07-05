@@ -3,6 +3,7 @@ setGeneric("conc_table", function(object) standardGeneric("conc_table"))
 setGeneric("sample_table", function(object) standardGeneric("sample_table"))
 setGeneric("feature_data", function(object) standardGeneric("feature_data"))
 setGeneric("experiment_data", function(object) standardGeneric("experiment_data"))
+setGeneric("design_data", function(object) standardGeneric("design_data"))
 setGeneric("conc_table<-",
            function(object, value) standardGeneric("conc_table<-"))
 setGeneric("sample_table<-",
@@ -11,6 +12,8 @@ setGeneric("feature_data<-",
            function(object, value) standardGeneric("feature_data<-"))
 setGeneric("experiment_data<-",
            function(object, value) standardGeneric("experiment_data<-"))
+setGeneric("design_data<-",
+           function(object, value) standardGeneric("design_data<-"))
 ################################################################################
 #' @rdname conc_table
 #' @export
@@ -122,6 +125,7 @@ setReplaceMethod(
     }
 )
 ################################################################################
+#' @export
 setAs(
     "ExperimentData",
     "list",

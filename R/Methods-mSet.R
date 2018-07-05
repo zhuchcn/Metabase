@@ -93,7 +93,7 @@ setGeneric("subset_features",
 #' @aliases subset_samples
 #' @param x An \code{\link{mSet-class}} or derived object
 #' @param samples The samples to subset. Can be character, logical, or integers.
-#' @return An \code{\linke{mSset-class}} or derived object
+#' @return An \code{\link{mSset-class}} or derived object
 #' @export
 setMethod(
     "subset_samples", signature = c("mSet", "character"),
@@ -219,6 +219,84 @@ transform_by_features = function(object, fun, ...){
     validObject(object)
     return(object)
 }
+################################################################################
+#' @title Summarize mSet by a feature variable
+#' @description This function takes the conc_table of a mSet object, groups
+#' features by a given feature variable, calculate the sum of each feature in
+#' each group, and return a summarized mSet object.
+#' @param object An \code{\link{mSet-class}} object
+#' @param feature_var An character variable, must from the column names of the
+#' feature_data slot. Length must be 1.
+#' @return An \code{\link{mSet-class}} object
+#' @export
+#' @author Chenghao Zhu
+#' @importFrom magrittr %>%
+#' @import dplyr
+#' @import reshape2
+#' @import tibble
+summarize_features = function(object, feature_var){
+    if(!inherits(object, "mSet"))
+        stop("The object does not inherit from mSet")
+    if(!is.character(feature_var) | length(feature_var) != 1)
+        stop("Invalid feature_var", call. = FALSE)
+    if(!feature_var %in% colnames(object@feature_data))
+        stop("The feature_var '" %+% feature_var %+% "' does not exist",
+             call. = FALSE)
 
+    object@conc_table = as.matrix(object@conc_table) %>%
+        as.data.frame %>%
+        mutate(feature_var = object@feature_data[,feature_var]) %>%
+        melt(id.var = "feature_var",
+             variable.name = "sample_id",
+             value.name = "concentration") %>%
+        group_by(feature_var, sample_id) %>%
+        summarize(concentration = sum(concentration)) %>%
+        dcast(feature_var~sample_id, value.var = "concentration") %>%
+        column_to_rownames("feature_var") %>%
+        as.matrix %>%
+        conc_table()
+    object@feature_data = NULL
+    validObject(object)
+    return(object)
+}
+################################################################################
+#' @title Summarize mSet by sample variables
+#' @description This function takes the conc_table of a mSet object, groups
+#' samples by given feature variables, calculate the mean of each fsample in
+#' each group, and return a summarized mSet object.
+#' @param object An \code{\link{mSet-class}} object
+#' @param sample_var An character variable, must from the column names of the
+#' sample_data slot.
+#' @return An \code{\link{mSet-class}} object
+#' @export
+#' @author Chenghao Zhu
+summarize_samples = function(object, sample_var){
 
+    if(!is.character(sample_var) |
+       any(!sample_var %in% colnames(object@sample_table)))
+        stop("Invalid sample_var", call. = FALSE)
+
+    quo_sample_var = quos(!!!syms(sample_var))
+
+    df = object@conc_table %>%
+        t %>% as.data.frame %>%
+        cbind(object@sample_table[sample_var]) %>%
+        melt(id.var = sample_var,
+             variable.name = "feature_id",
+             value.name = "concentration") %>%
+        group_by(!!!quo_sample_var, feature_id)  %>%
+        summarize(concentration = mean(concentration, na.rm = TRUE)) %>%
+        dcast(... ~ feature_id, value.var = "concentration")
+
+    conc_table = df[, ! colnames(df) %in% sample_var ] %>% t
+    colnames(conc_table) = 1:ncol(conc_table)
+    conc_table = conc_table(conc_table)
+    sample_table = sample_table(df[, sample_var])
+
+    object@conc_table = conc_table
+    object@sample_table = sample_table
+    validObject(object)
+
+    return(object)
+}
 

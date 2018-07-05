@@ -118,7 +118,7 @@ setClassUnion("MetabolomicsExperimentDataOrNULL",
 setValidity(
     Class = "MetabolomicsSet",
     method = function(object){
-        if(!isClass(object@experiment_data, "MetabolomicsExperimentDataOrNULL"))
+        if(!isClass(object@experiment_data, Class = "MetabolomicsExperimentDataOrNULL"))
             return("The experiment data must be an object of the MetabolomicsExperimentData class")
     }
 )

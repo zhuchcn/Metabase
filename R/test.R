@@ -14,3 +14,20 @@
 #                        sample_table = pdata,
 #                        feature_data = fdata,
 #                        experiment_data = experiment)
+#
+# study_design = new(
+#     "StudyDesign",
+#     institute = "UC Davis Department of Nutrition",
+#     organism = "Human",
+#     title = "Short-term effect of fast food vs Mediterranean diet to human HDL lipidome",
+#     abstract = NULL
+# )
+#
+# meta_mset = new(
+#     "meta-mSet",
+#     conc_table = edata,
+#     sample_table = pdata,
+#     feature_data = fdata,
+#     experiment_data = experiment,
+#     StudyDesign = study_design
+# )

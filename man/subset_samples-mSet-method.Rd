@@ -37,7 +37,7 @@
 integers.}
 }
 \value{
-An \code{\linke{mSset-class}} or derived object
+An \code{\link{mSset-class}} or derived object
 }
 \description{
 The subset_samples() and subset_features() functions gets a

@@ -137,6 +137,7 @@ setValidity(
             warning("Column names are required.")
     }
 )
+
 ################################################################################
 #' @name ExperimentData-class
 #' @title A virtual S4 class for experiment data
@@ -159,12 +160,12 @@ setClass(
     )
 )
 ################################################################################
-setClassUnion("characterOrNULL", c("character", "NULL"))
-setClassUnion("numericOrNULL",   c("numeric",   "NULL"))
-setClassUnion("conc_tableOrNULL", c("conc_table", "NULL"))
-setClassUnion("sample_tableOrNULL", c("sample_table", "NULL"))
-setClassUnion("feature_dataOrNULL", c("feature_data", "NULL"))
-setClassUnion("ExperimentDataOrNULL", c("ExperimentData", "NULL"))
+setClassUnion("characterOrNULL",      c("NULL", "character"))
+setClassUnion("numericOrNULL",        c("NULL", "numeric"))
+setClassUnion("conc_tableOrNULL",     c("NULL", "conc_table"))
+setClassUnion("sample_tableOrNULL",   c("NULL", "sample_table"))
+setClassUnion("feature_dataOrNULL",   c("NULL", "feature_data"))
+setClassUnion("ExperimentDataOrNULL", c("NULL", "ExperimentData"))
 ################################################################################
 #' @name mSet-class
 #' @title A virtual S4 class to store an quantitative experiment data.
@@ -214,9 +215,9 @@ setClass(
         "VIRTUAL"
     ),
     prototype = prototype(
-        conc_table = NULL,
-        sample_table = NULL,
-        feature_data = NULL,
+        conc_table      = NULL,
+        sample_table    = NULL,
+        feature_data    = NULL,
         experiment_data = NULL
     )
 )
@@ -249,6 +250,7 @@ setValidity(
     }
 )
 ################################################################################
+#' @keywords internal
 splat_object = function(object){
     slot_names = slotNames(object)
     slots_list = lapply(slot_names, function(slot){
