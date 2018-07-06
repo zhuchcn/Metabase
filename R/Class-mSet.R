@@ -44,6 +44,8 @@ setValidity(
 #' \code{\link{conc_table-class}}
 #' @author Chenghao Zhu
 conc_table = function(object){
+    if(!is.matrix(object))
+        stop("The conc_table mast be a matrix")
     object = new("conc_table", object)
     validObject(object)
     return(object)

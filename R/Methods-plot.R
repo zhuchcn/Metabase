@@ -127,3 +127,19 @@ plot_boxplot = function(object,
 
     return(p)
 }
+################################################################################
+plot_hist_missing_values = function(object, include.zero = FALSE){
+    df = data.frame(
+        num_na = apply(object@conc_table, 1, function(x) sum(is.na(x)))) %>%
+        rownames_to_column("feature_id")
+    if(!include.zero)
+        df = filter(df, num_na > 0)
+    df = group_by(df, num_na) %>%
+        summarize(count = n()) %>%
+        ungroup() %>%
+        mutate(text.position = count + max(count)/20)
+    ggplot(df) +
+        geom_col(aes(x = num_na, y = count)) +
+        geom_text(aes(x = num_na, y = text.position, label = count)) +
+        theme_bw()
+}

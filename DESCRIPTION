@@ -8,13 +8,22 @@ Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Imports:
-    stringr
+    stringr,
+    dplyr,
+    reshape2,
+    data.table,
+    ggplot2
+Suggests:
+    readxl
 Collate:
     Class-mSet.R
     Class-MetabolomicsSet.R
     Methods-assessor.R
     Methods-mSet-show.R
     Methods-mSet.R
+    Methods-limma.R
+    Methods-plot.R
+    Methods-IO.R
     test.R
 Encoding: UTF-8
 LazyData: true
