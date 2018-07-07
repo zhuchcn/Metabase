@@ -174,16 +174,17 @@ setMethod(
     }
 )
 ################################################################################
-#' @title Transform an mSet object by samples
+#' @title Transform an mSet object by sample
 #' @description Transform the conc_table slot of an \code{\link{mSet-class}}
-#' object by samples.
+#' object, one sample at a time. This is similar to MARGIN = 2 in the
+#' \code{\link{apply}} function.
 #' @param object An \code{\link{mSet-class}} or derived class object.
 #' @param fun A function to apply.
 #' @param ... Arguments to pass to the function/
 #' @return An \code{\link{mSet-class}} or derived class object
 #' @export
 #' @seealso \code{\link{mSet-class}}, \code{\link{transform_by_features}}
-transform_by_samples = function(object, fun, ...){
+transform_by_sample = function(object, fun, ...){
 
     if(length(fun(1:10)) != 10) stop("Function invalid")
 
@@ -199,14 +200,15 @@ transform_by_samples = function(object, fun, ...){
 ################################################################################
 #' @title Transform an mSet object by features
 #' @description Transform the conc_table slot of an \code{\link{mSet-class}}
-#' object by features.
+#' object, one feature at a time. This is similar to MARGIN = 1 in the
+#' \code{\link{apply}} function.
 #' @param object An \code{\link{mSet-class}} or derived class object.
 #' @param fun A function to apply.
 #' @param ... Arguments to pass to the function/
 #' @return An \code{\link{mSet-class}} or derived class object
 #' @export
 #' @seealso \code{\link{mSet-class}}, \code{\link{transform_by_features}}
-transform_by_features = function(object, fun, ...){
+transform_by_feature = function(object, fun, ...){
 
     if(length(fun(1:10)) != 10) stop("Function invalid")
 

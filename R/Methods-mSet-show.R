@@ -98,16 +98,41 @@ setMethod(
 ################################################################################
 #' @export
 setMethod(
-    "show", signature = "ExperimentData",
+    "show", signature = "MetabolomicsExperimentData",
     definition = function(object){
-        cat(str_pad(">>>>>> Experiment Data <<<<<<", 45, "left", " "))
+        cat(str_pad(">>>>>> Metabolomics Experiment Data <<<<<<", 51, "left", " "))
         cat("\n\n")
         slots = splat_object(object)
         for(i in 1:length(slots)){
             slot_name = gsub("_", " ", names(slots)[i])
             slot_name = str_to_title(slot_name)
-            cat(slot_name %+% ": " %+% slots[[i]])
-            cat("\n")
+            if(is.character(slots[[i]]) | is.numeric(slots[[i]])){
+                cat(slot_name %+% ": " %+% slots[[i]])
+                cat("\n")
+            }else if(is.data.frame(slots[[i]])){
+                cat(slot_name %+% ": a " %+% nrow(slots[[i]]) %+% " by " %+%
+                        ncol(slots[[i]]) %+% " data frame")
+            }
+        }
+    }
+)
+#' @export
+setMethod(
+    "show", signature = "LipidomicsExperimentData",
+    definition = function(object){
+        cat(str_pad(">>>>>> Lipidomics Experiment Data <<<<<<", 50, "left", " "))
+        cat("\n\n")
+        slots = splat_object(object)
+        for(i in 1:length(slots)){
+            slot_name = gsub("_", " ", names(slots)[i])
+            slot_name = str_to_title(slot_name)
+            if(is.character(slots[[i]]) | is.numeric(slots[[i]])){
+                cat(slot_name %+% ": " %+% slots[[i]])
+                cat("\n")
+            }else if(is.data.frame(slots[[i]])){
+                cat(slot_name %+% ": a " %+% nrow(slots[[i]]) %+% " by " %+%
+                        ncol(slots[[i]]) %+% " data frame")
+            }
         }
     }
 )

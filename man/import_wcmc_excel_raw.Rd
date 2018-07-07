@@ -5,7 +5,8 @@
 \title{Import West Coast Metabolomics Center data spreadsheet to a
 MetabolomicsSet object}
 \usage{
-import_wcmc_excel_raw(file, sheet, conc_range, sample_range, feature_range)
+import_wcmc_excel_raw(file, sheet, conc_range, sample_range, feature_range,
+  InChIKey = NULL, experiment_type = "metabolomics", institute = NULL)
 }
 \arguments{
 \item{file}{A character string to the path of the file.}
