@@ -21,6 +21,3 @@ plot_qc(object, mean = "qc_mean", sd = "sd_mean", cv = "cv_mean",
 \description{
 This function takes a MetabolomicsSet object and makes scatter plots using quality control samples
 }
-\examples{
-# ADD_EXAMPLES_HERE
-}

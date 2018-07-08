@@ -183,9 +183,6 @@ plot_hist_NA = function(object, include.zero = FALSE){
 #' @param sd A character string indicating the feature_data column of qc standard deviation.
 #' @param cv A character string indicating the feature_data column of qc coefficient of variance.
 #' @param log A logic variable whether to log-transfer mean or sd.
-#'
-#' @examples
-#' # ADD_EXAMPLES_HERE
 plot_qc = function(object,
                    mean = "qc_mean",
                    sd = "sd_mean",
