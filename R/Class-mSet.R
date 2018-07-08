@@ -151,7 +151,7 @@ setValidity(
 #'
 #' This is a virtual class and can not be called directly, but only can be
 #' inherited from.
-#' @exportClass ExperimentData-class
+#' @exportClass ExperimentData
 #' @seealso
 #' \code{\link{MetabolomicsExperimentData-class}}
 #' @author Chenghao Zhu

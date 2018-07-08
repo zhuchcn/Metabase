@@ -15,14 +15,14 @@
 #' @export
 #' @return A \code{\link{MetabolomcisSet-class}} object
 #' @author Chenghao Zhu
-import_wcmc_excel_raw = function(file,
-                                 sheet,
-                                 conc_range,
-                                 sample_range,
-                                 feature_range,
-                                 InChIKey = NULL,
-                                 experiment_type = "metabolomics",
-                                 institute = NULL){
+import_wcmc_excel = function(file,
+                             sheet,
+                             conc_range,
+                             sample_range,
+                             feature_range,
+                             InChIKey = NULL,
+                             experiment_type = "metabolomics",
+                             institute = NULL){
     if(!requireNamespace("readxl"))
         stop("The package 'readxl' is required for this funciton. Please install it.")
 
@@ -108,6 +108,10 @@ import_wcmc_excel_raw = function(file,
 #' @return A \code{\link{MetabolomcisSet-class}} object
 #' @author Chenghao Zhu
 collapse_QC = function(object, qc_names){
+    if(!inherits(object, "mSet"))
+        stop("Only mSet or derived classes are supported", call. = FALSE)
+
+    options(warn = -1)
     qcs = object@conc_table[,qc_names]
     object@feature_data = as(object@feature_data, "data.frame") %>%
         rownames_to_column("feature_id") %>%
@@ -115,9 +119,7 @@ collapse_QC = function(object, qc_names){
             qc_mean = rowMeans(qcs, na.rm = TRUE),
             qc_sd   = apply(qcs, 1, sd, na.rm = TRUE)
         ) %>%
-        mutate(
-            qc_cv = qc_mean / qc_sd
-        ) %>%
+        mutate(qc_cv = qc_mean / qc_sd) %>%
         column_to_rownames("feature_id") %>%
         feature_data()
     object = subset_samples(object, !sampleNames(object) %in% qc_names)
@@ -174,53 +176,93 @@ assign_lipid_class = function(x){
 #' @export
 #' @author Chenghao Zhu
 #'
-setGeneric("calibrate", function(object) standardGeneric("calibrate"))
-setMethod(
-    "calibrate", signature = "LipidomicsSet",
-    definition = function(object){
-        if(is.null(object@experiment_data@internal_standards))
-            stop("The experiment_data must contain a `internal_standards` slot",
-                 call. = FALSE)
-        if(is.null(object@feature_data$class))
-            stop("The feature_data slot must contain clas", call. = FALSE)
-        if(is.null(object@feature_data$InChIKey))
-            stop("The feature_data slot must contain InChIKey", call. = FALSE)
-        if(is.null(object@experiment_data@sample_volumn_ul))
-            stop("The experiment_data slot must contain `sample_volumn_ul`",
-                 call. = FALSE)
-        if(is.null(object@feature_data$ESI))
-            stop("The feature_data slot must have a column named 'ESI' indicats the ESI mode of each feature", call. = FALSE)
+calibrate_lipidomics_wcmc = function(object, class, cid, ESI){
+    if(!isClass(object, Class = "LipidomicsSet"))
+        stop("This function only supports LipidomicsSet data.", call. = FALSE)
+    if(is.null(object@experiment_data@internal_standards))
+        stop("The experiment_data must contain a `internal_standards` slot",
+             call. = FALSE)
+    if(is.null(object@experiment_data@sample_volumn_ul))
+        stop("The experiment_data slot must contain `sample_volumn_ul`",
+             call. = FALSE)
+    if(missing(class))
+        stop("Must have 'class' that specifies the feature variable of lipid class",
+             call. = FALSE)
+    if(!class %in% colnames(object@feature_data))
+        stop("The class variable '" %+% class %+% "' not found in the feature_data",
+             call. = FALSE)
+    if(missing(cid))
+        stop("Must have 'cid' that specifies the compound ID for each feature such as InChIKey")
+    if(!cid %in% colnames(object@feature_data))
+        stop("The cid variable '" %+% cid %+% "' not found in the feature_data",
+             call. = FALSE)
+    if(missing(ESI))
+        stop("Must have 'ESI' that specifies the feature variable of ESI mode")
+    if(!ESI %in% colnames(object@feature_data))
+        stop("The ESI variable '" %+% ESI %+% "' not found in the feature_data",
+             call. = FALSE)
 
-        is_df = object@experiment_data@internal_standards
+    is_df = object@experiment_data@internal_standards
 
-        object_clean = subset_features(
-            object,
-            !object@feature_data$InChIKey %in% is_df$InChIKey
-        )
-        object_istd = subset_features(
-            object,
-            object@feature_data$InChIKey %in% is_df$InChIKey
-        )
-        sample_vol = object@experiment_data@sample_volumn_ul
-        conc_table = sapply(1:nfeatures(object_clean), function(i){
-            int = object_clean@conc_table[i,]
-            class = object_clean@feature_data$class[i]
-            ESI = object_clean@feature_data$ESI[i]
-            istd.inchikey = is_df$InChIKey[is_df$class == class]
-            int.is = object_istd@conc_table[object_istd@feature_data$ESI == ESI &
-                                                object_istd@feature_data$InChIKey == istd.inchikey]
-            spike.amt = is_df$spike_amt[is_df$InChIKey == istd.inchikey]
-            return(int/int.is * spike.amt / sample_vol * 1000)
-        }) %>% t
-        rownames(conc_table) = featureNames(object_clean)
-        object_clean@conc_table = conc_table(conc_table)
-        object_clean@experiment_data@conc_table_unit = "ug/ml"
-        return(object_clean)
-    }
-)
+    object_clean = subset_features(
+        object,
+        !object@feature_data[, cid] %in% is_df[,cid]
+    )
+    object_istd = subset_features(
+        object,
+        object@feature_data[,cid] %in% is_df[,cid]
+    )
+    sample_vol = object@experiment_data@sample_volumn_ul
+    conc_table = sapply(1:nfeatures(object_clean), function(i){
+        int = object_clean@conc_table[i,]
+        lipid.class = object_clean@feature_data[i, class]
+        ESI.mode = object_clean@feature_data[i, ESI]
+        istd.cid = is_df[is_df[,class] == lipid.class, cid]
+        int.is = object_istd@conc_table[object_istd@feature_data[,ESI] == ESI.mode &
+                                            object_istd@feature_data[,cid] == istd.cid]
+        spike.amt = is_df$spike_amt[is_df[,cid] == istd.cid]
+        return(int/int.is * spike.amt / sample_vol * 1000)
+    }) %>% t
+    rownames(conc_table) = featureNames(object_clean)
+    object_clean@conc_table = conc_table(conc_table)
+    object_clean@experiment_data@conc_table_unit = "ug/ml"
+    return(object_clean)
+}
+################################################################################
+#' @title Filter features by QC CV
+#' @description This function deals with the situation where features are
+#' detetcted in both positive and negative ESI mode. The qc_cv is used as a
+#' reference and the one with a lower cv is kept, and the other one is dropped.
+#' @param object A \code{\link{MetabolomicsSet-class}} object
+#' @param cv A character string, indicates the column name of feature data,
+#' that has the coefficient of variance for each feature.
+#' @param cid A character string, indicates the column name of feature data,
+#' that has the chemical identifier for each feature. The chemical identifier
+#' must be unique to each feature. Some standard chemical identifier are PubMed
+#' ID, Lipidmaps ID, etc.
+#' @return A \code{\link{MetabolomicsSet-class}} object
+#' @export
+#' @author Chenghao Zhu
+filter_by_cv = function(object, cv, cid){
+    if(!inherits(object, "MetabolomicsSet"))
+        stop("The function only works for MetabolomicsSet data",
+             call. = FALSE)
+    if(!cv %in% colnames(object@feature_data))
+        stop("The argument cv not found in feature data",
+             call. = FALSE)
+    if(!cid %in% colnames(object@feature_data))
+        stop("The argument cid not found in feature data",
+             call. = FALSE)
+    options(warn = -1)
+    feature_data(object) = feature_data(object) %>%
+        rownames_to_column("feature_id") %>%
+        group_by(!!sym(cid)) %>%
+        mutate(keep = eval(parse(text = paste0(cv, "== min(", cv, ")")))) %>%
+        ungroup %>%
+        as.data.frame() %>%
+        column_to_rownames("feature_id") %>%
+        feature_data()
 
-
-
-
-
-
+    object = subset_features(object, feature_data(object)$keep)
+    return(object)
+}

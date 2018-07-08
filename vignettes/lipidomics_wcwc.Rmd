@@ -1,0 +1,175 @@
+---
+title: "Lipidomics Data Input and Clean"
+author: "Chenghao Zhu"
+date: "`r Sys.Date()`"
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Lipidomics Data Input and Clean}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE, warning = FALSE, error = FALSE,
+  fig.height = 4, fig.width = 6, fig.align = "center"
+)
+```
+
+## Introduction
+
+Metabolomics are powerful experiment approaches that analyzes all, or a specific class, of small molecule compounds in a biological specimen. Lipidomics is a special case of Metabolomics that only focus on the lipids. Metabolomics and lipidomics are now being adopted many different type of studies with different purposes, as a tool to answer different scientific questions. Metabolomics and lipidomics often generates big data with feature numbers very from hundreds to thousands. The package *Metabase* aims to help researchers handle, analyze and visualize metabolomics and lipidomics data. This vignettes is a workflow of how import and process the lipidomics data reported by the [West Coast Metabolomics Center, CA](http://metabolomics.ucdavis.edu/).
+
+## Install Metabase
+
+The Metabase package can be installed from github
+
+```{r, eval = F}
+devtools::install_github("zhuchcn/Metabase")
+```
+
+## Data
+
+The data used in this vignette is a lipidomics experiment from a cross-over nutritional intervention study. 10 subjects were given 2 dietary treatment, and blood samples were taken before and after each treatment.
+
+Data can be downloaed from here.
+
+```{r, eval = F}
+data.raw = "https://raw.githubusercontent.com/zhuchcn/Metabase/master/data-raw/302870_Zhu_CSH-QTOF_lipidomics.xlsx"
+standards = "https://raw.githubusercontent.com/zhuchcn/Metabase/master/data-raw/wcmc_lipidomics_standards.csv"
+download.file(url = data.raw,  destfile = "")
+download.file(url = standards, destfile = "wcmc_lipidomics_standards.csv")
+```
+
+## Data import
+
+### Read data
+
+Data import can be done using the function *import_wcmc_excel_raw()*. 
+
+Arguments:
+    + **file:** File path to the excel spreadsheet.
+    + **sheet:** The sheet name with data.
+    + **conc_range:** The cell range for concentration data.
+    + **sample_range:** The cell range for sample data.
+    + **feature_range:** The cell range for feature data.
+    + **InChIKey:** The name of the column with InChI Key. The InChI Key is neccesary for later process and analysis.
+
+```{r}
+library(Metabase)
+file = "302870_Zhu_CSH-QTOF_lipidomics.xlsx"
+mset = import_wcmc_excel(
+    file            = file, 
+    sheet           = "Submit",
+    conc_range      = "I10:BA613",
+    sample_range    = "H1:BA9",
+    feature_range   = "A9:H613",
+    InChIKey        = "InChI Key",
+    experiment_type = "Lipidomics"
+)
+mset
+```
+
+```{r}
+cat("Number of features:", nfeatures(mset),
+    "\nNumber of samples: ", nsamples(mset))
+```
+
+### Remove features 
+
+The dataset has 604 features. However 364 of them are unknow. 
+
+```{r}
+cat("Annotated:", sum(!is.na(feature_data(mset)$InChIKey)),
+    "\nUnknown:  ", sum(is.na(feature_data(mset)$InChIKey)))
+```
+
+The unknown features can be removed using the subset_features function
+
+```{r}
+mset = subset_features(mset, !is.na(feature_data(mset)$InChIKey))
+```
+
+### Collapse QC samples
+
+The first 5 samples are quality control samples.
+
+```{r}
+head(sample_table(mset), 8)
+```
+
+To call the collapse_QC function, the mean, standard deviation, and coefficient of variance for each sample are be calculated and stored in the feature_data slot. And then the QC samples are be remove. 
+
+```{r}
+mset = collapse_QC(mset, qc_names = paste0("Biorec00", 1:5))
+mset
+```
+
+### Filling NAs
+
+To see the missing values in the dataset, we can call the plot_hist_NA function. In this dataset, there are 3 features have 2 missing values, and 1 with 12. 
+
+```{r}
+plot_hist_NA(mset)
+```
+
+We can remove features with too many missing values using subset_features. The call below will keep all features that have less than 5 missing values.
+
+```{r}
+mset = subset_features(
+    mset, apply(conc_table(mset), 1, function(x) sum(is.na(x)) < 5) )
+```
+
+Then we can fill up the rest NAs using half of the lowest value of this feature in all samples.
+
+```{r}
+mset = transform_by_feature(
+    mset, function(x) ifelse(is.na(x), min(x, na.rm = TRUE)/2, x)
+)
+```
+
+### Calculate concentration using internal standards
+
+The west coast metabolomics center's lipidomics assay spikes 15 complex lipid internal standards into each sample during analysis. Each of the 15 complex lipid internal standards represents a lipid class. To see the spike information, load the following csv file.
+
+```{r}
+internal_standards = read.csv("wcmc_lipidomics_standards.csv")
+head(internal_standards)
+```
+
+Before the features can be calibrated to the internal standards, we need to first assign the lipid calss to each annotated feature. The function *assign_lipid_class* takes the annotation name and assign a lipid class to it. We also need to specify the ESI mode.
+
+```{r}
+feature_data(mset)$class = assign_lipid_class(feature_data(mset)$Annotation)
+feature_data(mset)$ESI = ifelse(grepl("\\+$", feature_data(mset)$Species),
+                                "pos", "neg")
+```
+
+Next, the internal standard data can be addded to the experiment_data slot of the data object.
+
+```{r}
+experiment_data(mset)$institute = "West Coast Metabolomics Center"
+experiment_data(mset)$sample_volumn_ul = 20
+experiment_data(mset)$internal_standards = internal_standards
+experiment_data(mset)
+```
+
+Then the features can be calibrated.
+
+```{r}
+mset = calibrate_lipidomics_wcmc(mset, cid = "InChIKey", 
+                                 class = "class", ESI = "ESI")
+mset
+```
+
+### Filter by CV
+
+The last problem is, some features are detected under both positive and negative ESI mode. This could be problomatic for example for some multi-variable analysis. We can only keep whichever with a lower CV.
+
+```{r}
+mset = filter_by_cv(mset, cv = "qc_cv", cid = "InChIKey")
+mset
+```
+
+The data now is cleaned up and is ready for any statistic analysis and visualization.

@@ -27,16 +27,16 @@
 #
 # design = model.matrix(data = as(sample_table(mset), "data.frame"), ~TX*Day + Subj + 1)
 # ################################################################################
-# file = "data-raw/mx 302870_Zhu_CSH-QTOF MS lipidomics_03-2017_submit.xlsx"
-# mset.raw = import_wcmc_excel_raw(
+# file = "data-raw/302870_Zhu_CSH-QTOF_lipidomics.xlsx"
+# mset.raw = import_wcmc_excel(
 #     file = file, sheet = "Submit",
-#     conc_range = "I8:BA611",
-#     sample_range = "H1:BA7",
-#     feature_range = "A7:H611",
+#     conc_range = "I10:BA613",
+#     sample_range = "H1:BA9",
+#     feature_range = "A9:H613",
 #     InChIKey = "InChI Key",
 #     experiment_type = "Lipidomics"
 # )
-# mset = subset_features(mset.raw, !is.na(feature_data(mset.raw)$Annotation))
+# mset = subset_features(mset.raw, !is.na(feature_data(mset.raw)$InChIKey))
 # mset = collapse_QC(mset, qc_names = paste0("Biorec00", 1:5))
 # mset = subset_features(
 #     mset, apply(conc_table(mset), 1, function(x) sum(is.na(x)) < 8) )
@@ -53,10 +53,8 @@
 # experiment_data(mset)$sample_volumn_ul = 20
 # experiment_data(mset)$internal_standards = internal_standards
 #
-#
-# mset_clean = calibrate(mset)
-#
-#
+# mset = calibrate_lipidomics_wcmc(mset, cid = "InChIKey", class = "class", ESI = "ESI")
+# mset = filter_by_cv(mset, cv = "qc_cv", cid = "InChIKey")
 #
 #
 #

@@ -131,7 +131,7 @@ setMethod(
                 cat("\n")
             }else if(is.data.frame(slots[[i]])){
                 cat(slot_name %+% ": a " %+% nrow(slots[[i]]) %+% " by " %+%
-                        ncol(slots[[i]]) %+% " data frame")
+                        ncol(slots[[i]]) %+% " data frame\n")
             }
         }
     }

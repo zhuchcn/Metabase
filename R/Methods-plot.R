@@ -31,6 +31,7 @@
 #' style based on the \code{\link{theme_classic}}.
 #' @param plotly logical. If TRUE, a plotly variable will be returned.
 #' @author Chenghao Zhu
+#' @import ggplot2
 #' @export
 plot_boxplot = function(object,
                         feature,
@@ -128,18 +129,48 @@ plot_boxplot = function(object,
     return(p)
 }
 ################################################################################
-plot_hist_missing_values = function(object, include.zero = FALSE){
+#' @title Plot Histogram of Missing Values
+#' @description This function takes a mSet object and print a histogram of
+#' missing values. The x axis is the number of missing values per feature, and
+#' the y axis is number of features with specific number of missing values.
+#' This is usful when filling NAs.
+#'
+#' @param object A \code{\link{mSet-class}} or derived object.
+#' @param include.zero Logic value whether to include zero in the histogram.
+#' Default is FALSE.
+#' @export
+#' @return A ggplot object
+#' @examples
+#' # ADD_EXAMPLES_HERE
+plot_hist_NA = function(object, include.zero = FALSE){
+    if(!inherits(object, "mSet"))
+        stop("Input object must inherit from mSet")
+
     df = data.frame(
         num_na = apply(object@conc_table, 1, function(x) sum(is.na(x)))) %>%
         rownames_to_column("feature_id")
+    if(sum(df$num_na >0) == 0)
+        stop("No NA detected. You are good to go!", call. = FALSE)
+
     if(!include.zero)
         df = filter(df, num_na > 0)
-    df = group_by(df, num_na) %>%
-        summarize(count = n()) %>%
-        ungroup() %>%
-        mutate(text.position = count + max(count)/20)
+
+    df = sapply(seq(0, max(df$num_na), 1), function(x){
+        c(x, sum(df$num_na == x))
+    }) %>% t %>% as.data.frame %>%
+        setNames(c("num_na", "count")) %>%
+        mutate(text.position = count + max(count)/20,
+               text = ifelse(count == 0, NA, count))
+
     ggplot(df) +
-        geom_col(aes(x = num_na, y = count)) +
-        geom_text(aes(x = num_na, y = text.position, label = count)) +
-        theme_bw()
+        geom_col(aes(x = num_na, y = count), width = 1) +
+        geom_text(aes(x = num_na, y = text.position, label = text)) +
+        scale_x_continuous(limits = c(0, max(df$num_na)+1),
+                           breaks = seq(0, max(df$num_na)+1, 1)) +
+        labs(x = "number of missing values per feature",
+             y = "count of features",
+             title = "Totel feature number: " %+% nfeatures(object)) +
+        theme_bw() +
+        theme(plot.title = element_text(hjust = 0.5))
 }
+

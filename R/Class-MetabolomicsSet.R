@@ -28,7 +28,7 @@
 #' @slot data_precessing_software character indicates the software the data
 #' processing was done.
 #'
-#' @exportClass MetabolomicsExperimentData-class
+#' @exportClass MetabolomicsExperimentData
 #' @author Chenghao Zhu
 setClass(
     Class = "MetabolomicsExperimentData",
@@ -245,7 +245,7 @@ MetabolomicsSet = function(
 #' \code{\link{MetabolomicsExperimentData-class}},
 #' \code{\link{calibrate}}
 #'
-#' @exportClass LipidomicsExperimentData-class
+#' @exportClass LipidomicsExperimentData
 #' @author Chenghao Zhu
 setClass(
     Class = "LipidomicsExperimentData",
