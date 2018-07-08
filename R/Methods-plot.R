@@ -173,4 +173,74 @@ plot_hist_NA = function(object, include.zero = FALSE){
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5))
 }
+################################################################################
+#' @title Plot quality control from a MetabolomcisSet object
+#'
+#' @description This function takes a MetabolomicsSet object and makes scatter plots using quality control samples
+#'
+#' @param object A \code{\link{MetabolomicsSet-class}} object.
+#' @param mean A character string indicating the feature_data column of qc means.
+#' @param sd A character string indicating the feature_data column of qc standard deviation.
+#' @param cv A character string indicating the feature_data column of qc coefficient of variance.
+#' @param log A logic variable whether to log-transfer mean or sd.
+#'
+#' @examples
+#' # ADD_EXAMPLES_HERE
+plot_qc = function(object,
+                   mean = "qc_mean",
+                   sd = "sd_mean",
+                   cv = "cv_mean",
+                   log=TRUE){
+    if(!inherits(object, "MetabolomicsSet"))
+        stop("Only MetabolomicsSet or derieved classes supported",
+             call. = TRUE)
+    if(missing(mean)){
+        stop("mean is required", call. = FALSE)
+    }else if(!missing(sd) & missing(cv)){
+        p = plot_qc_sd(object = object, mean = mean, sd = sd, log = log)
+    }else if(missing(sd) & !missing(cv)){
+        p = plot_qc_cv(object = object, mean = mean, cv = cv, log = log)
+    }else if(!missing(sd) & !missing(cv)){
+        p1 = plot_qc_sd(object = object, mean = mean, sd = sd, log = log)
+        p2 = plot_qc_cv(object = object, mean = mean, cv = cv, log = log)
+        p = cowplot::plot_grid(p1, p2, nrow = 1)
+    }else{
+        stop("At least either of sd or cv needs to be specified",
+             call. = FALSE)
+    }
+    return(p)
+}
+#' @keywords internal
+plot_qc_sd = function(object, mean, sd, log=TRUE){
+    df = object@feature_data[,c(mean, sd)]
+    if(log){
+        df[, mean] = log(df[, mean] + 1)
+        df[, sd]   = log(df[, sd]   + 1)
+    }
+    xlab = "Mean, Quality Controls"
+    if(log) xlab = xlab %+% " (log)"
+    ylab = "SD, Quality Controls"
+    if(log) ylab = ylab %+% " (log)"
+    ggplot(df) +
+        geom_point(aes_string(x = mean, y = sd), alpha = 0.8) +
+        labs(x = xlab, y = ylab) +
+        theme_bw()
+}
+#' @keywords internal
+plot_qc_cv = function(object, mean, cv, log=TRUE){
+    df = object@feature_data[,c(mean, cv)]
+    if(log) df[, mean] = log(df[, mean] + 1)
+    xlab = "Mean, Quality Controls"
+    if(log) xlab = xlab %+% " (log)"
+    ggplot(df) +
+        geom_point(aes_string(x = mean, y = cv), alpha = 0.8) +
+        scale_y_continuous(limits = c(0,100)) +
+        labs(x = xlab, y = "CV (%), Quality Controls")+
+        theme_bw()
+}
+
+
+
+
+
 
