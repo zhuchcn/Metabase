@@ -20,6 +20,7 @@ Suggests:
 Collate:
     Class-mSet.R
     Class-MetabolomicsSet.R
+    Class-multiSet.R
     Methods-assessor.R
     Methods-mSet-show.R
     Methods-mSet.R
