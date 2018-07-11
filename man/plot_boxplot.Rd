@@ -4,52 +4,30 @@
 \alias{plot_boxplot}
 \title{Make a boxplot of a feature}
 \usage{
-plot_boxplot(object, feature, by = NULL, show.points = TRUE, line = NULL,
-  color.by = NULL, jitter = 0, box.size = 0.5, whisker.size = 0.5,
-  whisker.width = 0.5, point.size = 3, point.alpha = 0.5,
-  point.color = "black", color.pal = NULL, show.legend = TRUE,
-  style = "bw", plotly = FALSE)
+plot_boxplot(object, x, feature, rows, cols, line, color, ...)
 }
 \arguments{
 \item{object}{An \code{\link{mSet-class}} object}
 
+\item{x}{A character string indicating the x variable. Must be one of the
+sample data variables.}
+
 \item{feature}{A character indicating the feature name to plot. Must be one
 of the feature names.}
 
-\item{by}{A character vector with length up to 3, indicating The sample
-sample meta-data variable to plot the concentration againt to. It must be
-from the sample data's column names. If multiple variables are givin, facets
-will be used.}
+\item{rows}{A character string indicating the variable defines faceting
+groups on columns. Must be one of the sample data variables.}
 
-\item{line}{A character of a sample meta-data variable. If specified,
-geom_line will be called to draw lines between 2 points. This is particually
-usful to deal with repeated measures.}
+\item{cols}{A character string indicating the variable defines faceting
+groups on columns. Must be one of the sample data variables.}
 
-\item{color.by}{A character of a sample meta-data variable. If specified,
-points with different levels will be colored diffently. See examples.}
+\item{line}{A character string indicating the variable used to draw lines
+between points. Must be one of the sample data variables.}
 
-\item{jitter}{numeric. If specified, points will be jittered. Recommanded
-value: 0.15. the \code{line} and \code{jitter} can not be specified at the
-same time.}
+\item{color}{A character string indicating the variable defines the color
+of lines or points. Must be one of the sample data variables.}
 
-\item{whisker.width}{numeirc. The width of boxplot whisker. Default is 0.5.}
-
-\item{point.size}{numeric. The size of points. Default is 3}
-
-\item{point.alpha}{numeric. The transparency of points.}
-
-\item{point.color}{character. If the \code{color.by} is not specified, this
-value will be given the to the points color.}
-
-\item{color.pal}{character. The color panel to use.}
-
-\item{show.legend}{logical. Whether to show legend. Default is TRUE.}
-
-\item{plotly}{logical. If TRUE, a plotly variable will be returned.}
-
-\item{syle}{character. The pre-defined style to apply on the plot. "bw" is a
-empty default style using the \code{\link{theme_bw}}. "academic" is a classic
-style based on the \code{\link{theme_classic}}.}
+\item{...}{Other arguments see \code{\link{ggboxplot}}}
 }
 \description{
 This function uses the ggplot2 package to generate a boxplot from a givin

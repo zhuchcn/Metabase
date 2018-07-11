@@ -3,18 +3,25 @@
 \docType{methods}
 \name{sampleNames,mSet-method}
 \alias{sampleNames,mSet-method}
-\title{Get the sample names of a mSet object}
+\alias{sampleNames<-,mSet-method}
+\alias{sampleNames<-}
+\title{Get or set the sample names of a mSet object}
 \usage{
 \S4method{sampleNames}{mSet}(x)
+
+\S4method{sampleNames}{mSet}(x) <- value
 }
 \arguments{
 \item{x}{A \code{\link{mSet-class}} or derived class object}
+
+\item{value}{A character vector. The length must equal to the number of
+samples of the object.}
 }
 \value{
 A character vector.
 }
 \description{
-Get the sample names from a given \code{\link{mSet-class}}
+Get or set the sample names from a given \code{\link{mSet-class}}
 or derived classes.
 }
 \seealso{

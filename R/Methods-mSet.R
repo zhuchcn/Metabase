@@ -48,8 +48,9 @@ setMethod(
 )
 ################################################################################
 setGeneric("sampleNames", function(x) standardGeneric("sampleNames"))
-#' @title Get the sample names of a mSet object
-#' @description Get the sample names from a given \code{\link{mSet-class}}
+#' @rdname sampleNames-mSet-method
+#' @title Get or set the sample names of a mSet object
+#' @description Get or set the sample names from a given \code{\link{mSet-class}}
 #' or derived classes.
 #' @param x A \code{\link{mSet-class}} or derived class object
 #' @return A character vector.
@@ -63,7 +64,25 @@ setMethod(
     }
 )
 ################################################################################
+setGeneric("sampleNames<-", function(x, value) standardGeneric("sampleNames<-"))
+#' @rdname sampleNames-mSet-method
+#' @aliases sampleNames<-
+#' @param value A character vector. The length must equal to the number of
+#' samples of the object.
+#' @export
+setReplaceMethod(
+    "sampleNames", signature = "mSet",
+    function(x, value){
+        colnames(x@conc_table) = value
+        if(!is.null(x@sample_table))
+            rownames(x@sample_table) = value
+        validObject(x)
+        return(x)
+    }
+)
+################################################################################
 setGeneric("featureNames", function(x) standardGeneric("featureNames"))
+#' @rdname featureNames-mSet-method
 #' @title Get the feature names of a mSet object
 #' @description Get the feature names from a given \code{\link{mSet-class}}
 #' or derived classes.
@@ -76,6 +95,23 @@ setMethod(
     "featureNames", signature = "mSet",
     function(x){
         return(rownames(x@conc_table))
+    }
+)
+################################################################################
+setGeneric("featureNames<-", function(x, value) standardGeneric("featureNames<-"))
+#' @rdname featureNames-mSet-method
+#' @aliases featureNames<-
+#' @param value A character vector. The length must equal to the number of
+#' features of the object.
+#' @export
+setReplaceMethod(
+    "featureNames", signature = "mSet",
+    function(x, value){
+        rownames(x@conc_table) = value
+        if(!is.null(x@feature_data))
+            rownames(x@feature_data) = value
+        validObject(x)
+        return(x)
     }
 )
 ################################################################################
@@ -186,7 +222,8 @@ setMethod(
 #' @seealso \code{\link{mSet-class}}, \code{\link{transform_by_features}}
 transform_by_sample = function(object, fun, ...){
 
-    if(length(fun(1:10)) != 10) stop("Function invalid")
+    if(length(fun(1:nfeatures(object))) != nfeatures(object))
+        stop("Function invalid")
 
     conc_table = apply(conc_table(object), 2, fun, ...)
 
@@ -210,7 +247,8 @@ transform_by_sample = function(object, fun, ...){
 #' @seealso \code{\link{mSet-class}}, \code{\link{transform_by_features}}
 transform_by_feature = function(object, fun, ...){
 
-    if(length(fun(1:10)) != 10) stop("Function invalid")
+    if(length(fun(1:nsamples(object))) != nsamples(object))
+        stop("Function invalid")
 
     conc_table = t(apply(conc_table(object), 1, fun, ...))
 

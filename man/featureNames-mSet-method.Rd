@@ -3,12 +3,19 @@
 \docType{methods}
 \name{featureNames,mSet-method}
 \alias{featureNames,mSet-method}
+\alias{featureNames<-,mSet-method}
+\alias{featureNames<-}
 \title{Get the feature names of a mSet object}
 \usage{
 \S4method{featureNames}{mSet}(x)
+
+\S4method{featureNames}{mSet}(x) <- value
 }
 \arguments{
 \item{x}{A \code{\link{mSet-class}} or derived class object}
+
+\item{value}{A character vector. The length must equal to the number of
+features of the object.}
 }
 \value{
 A character vector.

@@ -1,11 +1,10 @@
 Package: Metabase
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Data container, handling, and visualization for high through-put quantitative experiment data.
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Chenghao Zhu
+Maintainer: Chenghao Zhu <chhzhu@ucdavis.edu>
+Description:
 License: What license is it under?
 Imports:
     stringr,

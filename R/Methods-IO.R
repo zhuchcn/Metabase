@@ -103,6 +103,47 @@ import_wcmc_excel = function(file,
     return(object)
 }
 ################################################################################
+#' @title Export mSet object into a Excle sheet
+#'
+#' @description This function allows users to export a mSet object to an Excle
+#' spreadsheet. The output is a spreadsheet with feature data on the left,
+#' sample table on the top and transposed, and the conc table in the middle.
+#'
+#' This function uses the xlsx pacakge to write the data into Excle format.
+#' Please make sure the package is pre-installed before using it.
+#'
+#' @param object A \code{\link{mSet-class}} or derived object.
+#' @param file A character string indicates the output path.
+#'
+#' @return A Excle spreadsheet
+#' @export
+#' @author Chenghao Zhu
+export_excle = function(object, file){
+    if(!requireNamespace(xlsx))
+        stop("The package xlsx is required for this function. Please install it.",
+             call. = FALSE)
+    if(!inherits(object, "mSet"))
+        stop("Only mSet or derived classes are supported", call. = FALSE)
+
+    emt_mat = matrix("", ncol = ncol(object@feature_data),
+                     nrow = ncol(object@sample_table)+1)
+    featVar = c("feature_id", colnames(object@feature_data))
+    sampVar = c("sample_id",  colnames(object@sample_table))
+    emt_mat = rbind(emt_mat, featVar[-length(featVar)])
+    emt_mat = cbind(emt_mat, c(sampVar, featVar[length(featVar)]))
+    top_mat = cbind(emt_mat,
+                    rbind(t(rownames_to_column(object@sample_table, "sample_id")),
+                          "Concentration"))
+    dimnames(top_mat) = NULL
+    bot_mat = cbind(rownames_to_column(object@feature_data, "feature_id"),
+                    object@conc_table) %>% as.matrix
+    dimnames(bot_mat) = NULL
+    data = rbind(top_mat, bot_mat)
+    xlsx::write.xlsx(data, file = file, row.names = FALSE, col.names = FALSE,
+               showNA = FALSE)
+}
+
+################################################################################
 #' @title Collapse QC samples from a MetabolomcisSet object
 #' @description Calculate the mean, standard deviation, and coefficient of
 #' variance of the QC and put into the feature_data slot. The QC samples are
@@ -143,15 +184,18 @@ collapse_QC = function(object, qc_names){
 #' @author Chenghao Zhu
 assign_lipid_class = function(x){
     get_a_class = function(x){
-        classes = c('CE','Cholesterol','CUDA','LPC','LPE','PC','PE','PG','SM',
-                    "Cer", 'Sphingosine','Ceramide','DG','MG','MAG','TG','FA', "AC",
-                    'GlcCer', 'ceramide')
+        classes = c('CE', 'Cholesteryl ester','Cholesterol','CUDA','LPC','LPE',
+                    'PC','PE','PG','SM', "Cer", 'Sphingosine','Ceramide','DG',
+                    'MG','MAG','TG','FA', "AC", 'GlcCer', 'ceramide',
+                    'Acylcarnitine')
         for(class in classes){
             if(grepl(class, x)){
+                if(class == "Cholesteryl ester") return("CE")
                 if(class == 'MAG')  return('MG')
                 if(class == 'GlcCer') return('Cer')
                 if(class == 'ceramide') return('Cer')
                 if(class == "Ceramide") return("Cer")
+                if(class == "Acylcarnitine") return("AC")
                 else  return(class)
             }
         }
@@ -222,6 +266,9 @@ calibrate_lipidomics_wcmc = function(object, class, cid, ESI){
     conc_table = sapply(1:nfeatures(object_clean), function(i){
         int = object_clean@conc_table[i,]
         lipid.class = object_clean@feature_data[i, class]
+        if(is.na(lipid.class))
+            stop("Unknown lipid class. Feature ID: " %+% featureNames(object_clean)[i],
+                 call. = FALSE)
         ESI.mode = object_clean@feature_data[i, ESI]
         istd.cid = is_df[is_df[,class] == lipid.class, cid]
         int.is = object_istd@conc_table[object_istd@feature_data[,ESI] == ESI.mode &
@@ -234,6 +281,7 @@ calibrate_lipidomics_wcmc = function(object, class, cid, ESI){
     object_clean@experiment_data@conc_table_unit = "ug/ml"
     return(object_clean)
 }
+
 ################################################################################
 #' @title Filter features by QC CV
 #' @description This function deals with the situation where features are

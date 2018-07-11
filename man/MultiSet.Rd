@@ -2,12 +2,8 @@
 % Please edit documentation in R/Class-multiSet.R
 \name{MultiSet}
 \alias{MultiSet}
-\alias{MultiSet}
-\title{S4 class for mutiple experiment types}
+\title{Construct a MultiSet class object}
 \usage{
-MultiSet(conc_table = NULL, sample_table = NULL, feature_data = NULL,
-  experiment_data = NULL)
-
 MultiSet(conc_table = NULL, sample_table = NULL, feature_data = NULL,
   experiment_data = NULL)
 }
@@ -22,22 +18,12 @@ MultiSet(conc_table = NULL, sample_table = NULL, feature_data = NULL,
 experiment_data slot in MultiSet is not defined so it can not be used yet.}
 }
 \description{
-The MultiSet class is a flexible data container for different
-type of experiment data, such as clinical values, dietary data, or any
-biochemical assies. Now it simply inherits from the virtual
-\code{\link{mSet-class}} without any modification or restriction. For more
-detail, please see the mSet help document.
-
 The main constructor to creat a \code{\link{MultiSet-class}}
 object.
 }
 \seealso{
-\code{\link{mSet-class}}, \code{\link{MultiSet}}
-
 \code{\link{MultiSet-class}}, \code{\link{mSet-class}}
 }
 \author{
-Chenghao Zhu
-
 Chenghao Zhu
 }

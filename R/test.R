@@ -55,6 +55,23 @@
 #
 # mset = calibrate_lipidomics_wcmc(mset, cid = "InChIKey", class = "class", ESI = "ESI")
 # mset = filter_by_cv(mset, cv = "qc_cv", cid = "InChIKey")
-#
-#
-#
+# ################################################################################
+# file = "/Users/chenghaozhu/Box Sync/UC Davis/Right Now/Researches/Zivkovic Lab/Egg Study/Result/Analysis/raw_data/diet_data/Diet Data.7.3.18xlsx.xlsx"
+# diet_data = read_excel(path = file, sheet = "Sheet1", range = "A1:Q81")
+# diet_data = as.data.frame(diet_data)
+# rownames(diet_data) = with(diet_data, paste0("Egg", `Study ID`, `Visit`))
+# conc_table = conc_table(t(diet_data[,-(1:5)]))
+# sample_table = sample_table(diet_data[,1:5])
+# multiSet = MultiSet(conc_table = conc_table, sample_table = sample_table)
+# ################################################################################
+# file = "/Users/chenghaozhu/Box Sync/UC Davis/Right Now/Researches/Zivkovic Lab/Egg Study/Result/Analysis/raw_data/biogenic_amines/mx 349859_Zhu_HILIC-QTOF MSMS_11-2017_submit.xlsx"
+# mset = import_wcmc_excel(
+#     file = file,
+#     sheet = "Submit",
+#     conc_range = "I8:CS1296",
+#     sample_range = "H1:CS7",
+#     feature_range = "A7:H1296",
+#     InChIKey = "InChI Key",
+#     experiment_type = "Biogenic Amines"
+# )
+# mset = subset_features(mset, is.na(feature_data(mset)$Annotation))

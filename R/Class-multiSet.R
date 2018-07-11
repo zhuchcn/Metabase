@@ -1,3 +1,33 @@
+#' @name MultiExperimentData
+#' @title S4 class to store experiment data for MultiSet
+#' @description This is the S4 class for stroing experiment data for the
+#' \code{\link{MultiSet-class}} object.
+#' @seealso \code{\link{MultiSet-class}}
+#' @exportClass MultiExperimentData
+#' @author Chenghao Zhu
+setClass(
+    Class = "MultiExperimentData",
+    representation = representation(
+        experiment_type = "characterOrNULL"
+    ),
+    contains = "ExperimentData",
+    prototype = prototype(
+        experiment_type = NULL
+    )
+)
+
+#' @title Construct a MultiExperimentData object
+#' @description The constructor for \code{\link{MultiExperimentData-class}}.
+#' See the MultiExperimentData-class for more detail.
+#' @param experiment_type A character string indicates the type of experiement.
+#' @export
+#' @author Chenghao Zhu
+MultiExperimentData = function(experiment_type){
+    new("MultiExperimentData",
+        experiment_type = experiment_type)
+}
+
+#' @name MultiSet-class
 #' @title S4 class for mutiple experiment types
 #' @description The MultiSet class is a flexible data container for different
 #' type of experiment data, such as clinical values, dietary data, or any
@@ -7,7 +37,13 @@
 #' @seealso \code{\link{mSet-class}}, \code{\link{MultiSet}}
 #' @author Chenghao Zhu
 #' @exportClass MultiSet
-MultiSet <- setClass(Class = "MultiSet", contains = "mSet")
+MultiSet <- setClass(
+    Class = "MultiSet", contains = "mSet",
+    validity = function(object){
+        if(!is.null(object@experiment_data) & class(object@experiment_data) != "MultiExperimentData")
+            return("The experiment_data must be a MultiExperimentData object")
+    }
+)
 
 
 #' @title Construct a MultiSet class object
@@ -32,3 +68,14 @@ MultiSet = function(conc_table      = NULL,
         feature_data    = feature_data,
         experiment_data = experiment_data)
 }
+
+#' @export
+setMethod(
+    "show", signature = "MultiSet",
+    definition = function(object){
+        header = ">>>>>>>> " %+% object@experiment_data$experiment_type %+% " <<<<<<<<"
+        cat(str_pad(header, width = 50, side = "left", pad = " "))
+        cat("\n")
+        callNextMethod()
+    }
+)
