@@ -320,3 +320,62 @@ filter_by_cv = function(object, cv, cid){
     object = subset_features(object, feature_data(object)$keep)
     return(object)
 }
+
+################################################################################
+#' @title Lipid annotation formater for lipidblast
+#' @description A formater for lipid names for wcmc lipidblast annotations.
+#' Lipid names are forced to be in a style of "PC 36:2 o", as lipid class
+#' abbreviations followed by fatty acid length and number of double bonds. An
+#' additional "d" in the end means a SM or Ceramide, and a "p" or "o" means a
+#' plasmonyl-lipid.
+#' @param x character vector of lipid names.
+#' @return a character vector
+#' @export
+lipid_name_formater = function(x){
+    # 2 names connected with a 'or'. Seriously wcmc, why?
+    x = gsub("(.*)or.*","\\1",x) %>% str_trim(side = "both")
+    x = str_split(x, "; ", simplify = T)[,1]
+    # if fatty acids are listed separated
+    pat = "\\d{1,2}:\\d{1}\\/{1}\\d{1,2}:\\d{1}"
+    for(i in 1:length(x)){
+        if(grepl(pat, x[i])){
+            x[i] = gsub(
+                pat,
+                str_extract(x[i],pat) %>%
+                    str_split("\\/", simplify = T) %>%
+                    str_split("\\:", simplify = T) %>%
+                    apply(2, function(xx) sum(as.integer(xx))) %>%
+                    paste(collapse =":"),
+                x[i])
+        }
+    }
+
+    # remove Z, H, and E
+    x = gsub("\\(\\d{1,2}[ZHE]\\)","",x)
+    # CE
+    x = gsub("\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}\\s*Cholesteryl ester", "CE \\1", x)
+    x = gsub("\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}\\s*CE", "CE \\1", x)
+    x = gsub("Cholesteryl ester\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "CE \\1", x)
+    x = gsub("CE\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "CE \\1", x)
+    # DG
+    x = gsub("DG\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "DG \\1", x)
+    x = gsub("Diacylglycerol\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "DG \\1", x)
+    # FA
+    x = gsub("FA\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}.*", "FA \\1", x)
+    # Ceramide
+    x = gsub("^Ceramide\\s{,1}\\({,1}d(\\d{1,2}\\:\\d{1})\\){,1}.*", "Ceramide \\1 d",x)
+    # Gal-Gal-Cer
+    x = gsub("^Gal-Gal-Cer\\s*\\({0,1}d(\\d{1,2}:\\d{1})\\){,1}.*", "Gal-Gal-Cer \\1 d",x)
+    x = gsub("^Lactosylceramide\\s*\\(d{0,1}d(\\d{1,2}:\\d{1})\\){,1}.*", "Gal-Gal-Cer \\1 d",x)
+    # GlcCer
+    x = gsub("GlcCer\\s*\\(d(\\d{1,2}:\\d{1}).*", "GlcCer \\1 d", x)
+    # LPC, LPE, PC, and PE
+    x = gsub("(L{0,1}P[CEASI])\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\2", x)
+    x = gsub("(L{0,1}P[CEASI])\\s*\\(*([op]{1})-(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\3 \\2", x)
+    x = gsub("Plasmenyl-(L{0,1}P[CEASI])\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\2 p", x)
+    # SM
+    x = gsub("SM\\s*\\(*d(\\d{1,2}:\\d{1})\\)*.*","SM \\1 d", x)
+    # SM
+    x = gsub("TG\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*","TG \\1", x)
+    return(x)
+}
