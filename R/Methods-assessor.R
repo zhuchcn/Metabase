@@ -135,11 +135,12 @@ setAs(
 )
 ################################################################################
 #' @rdname Extract
-#' @title Extract or Replace A Slot of An ExperimentData
+#' @aliases $
+#' @title Extract or Replace A Slot of An mSet or ExperimentData object
 #' @description Extract or replace the content of a slot of an
-#' \code{\link{ExperimentData-class}} object.
-#' @param x An \code{\link{ExperimentData-class}} object.
-#' @param name A character-string name of the slot.
+#' \code{\link{mSet-class}} or an \code{\link{ExperimentData-class}} object.
+#' @param x An \cide{\link{mSet-class}} or \code{\link{ExperimentData-class}} object.
+#' @param name The name of the slot.
 #' @export
 setMethod("$", "ExperimentData", function(x, name){
     slot(x, name)
@@ -147,7 +148,8 @@ setMethod("$", "ExperimentData", function(x, name){
 #' @rdname Extract
 #' @param value A nreplacement value for the slot, which must be from a class
 #' compatible with the class defined for this slot in the definition of the
-#' class of \code{\link{ExperimentData-class}} or derived object.
+#' class of either \code{\link{mSet-class}} or \code{\link{ExperimentData-class}}
+#' or derived object.
 #' @aliases $<-
 #' @export
 setReplaceMethod(
@@ -163,7 +165,7 @@ setReplaceMethod(
 #' @export
 setMethod("[[", "ExperimentData", function(x, i, j, ...){
     if(!is.character(i))
-        stop("index must be slot name")
+        stop("[ Metabase ] Slot not found", call. = FALSE)
     slot(x, i)
 })
 #' @rdname Extract
@@ -173,7 +175,43 @@ setReplaceMethod(
     "[[", "ExperimentData",
     function(x, i, j, ..., value){
         if(!is.character(i))
-            stop("index must be slot name")
+            stop("[ Metabase ] Slot not found", call. = FALSE)
+        slot(x, i) = value
+        validObject(x)
+        return(x)
+    }
+)
+#' @rdname Extract
+#' @aliases $
+#' @export
+setMethod("$", "mSet", function(x, name){slot(x, name)})
+#' @rdname Extract
+#' @aliases $<-
+#' @export
+setReplaceMethod(
+    "$", "mSet",
+    function(x, name, value){
+        slot(x, name) = value
+        validObject(x)
+        return(x)
+    }
+)
+#' @rdname Extract
+#' @aliases [[
+#' @export
+setMethod("[[", "mSet", function(x, i, j, ...){
+    if(!is.character(i))
+        stop("[ Metabase ] Slot not found", call. = FALSE)
+    slot(x, i)
+})
+#' @rdname Extract
+#' @aliases [[<-
+#' @export
+setReplaceMethod(
+    "[[", "mSet",
+    function(x, i, j, ..., value){
+        if(!is.character(i))
+            stop("[ Metabase ] Slot not found", call. = FALSE)
         slot(x, i) = value
         validObject(x)
         return(x)

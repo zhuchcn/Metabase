@@ -3,13 +3,22 @@
 \docType{methods}
 \name{$,ExperimentData-method}
 \alias{$,ExperimentData-method}
+\alias{$}
 \alias{$<-,ExperimentData-method}
 \alias{$<-}
 \alias{[[,ExperimentData-method}
 \alias{[[}
 \alias{[[<-,ExperimentData-method}
 \alias{[[<-}
-\title{Extract or Replace A Slot of An ExperimentData}
+\alias{$,mSet-method}
+\alias{$}
+\alias{$<-,mSet-method}
+\alias{$<-}
+\alias{[[,mSet-method}
+\alias{[[}
+\alias{[[<-,mSet-method}
+\alias{[[<-}
+\title{Extract or Replace A Slot of An mSet or ExperimentData object}
 \usage{
 \S4method{$}{ExperimentData}(x, name)
 
@@ -18,17 +27,26 @@
 \S4method{[[}{ExperimentData}(x, i, j, ...)
 
 \S4method{[[}{ExperimentData}(x, i, j, ...) <- value
+
+\S4method{$}{mSet}(x, name)
+
+\S4method{$}{mSet}(x, name) <- value
+
+\S4method{[[}{mSet}(x, i, j, ...)
+
+\S4method{[[}{mSet}(x, i, j, ...) <- value
 }
 \arguments{
-\item{x}{An \code{\link{ExperimentData-class}} object.}
+\item{x}{An \cide{\link{mSet-class}} or \code{\link{ExperimentData-class}} object.}
 
-\item{name}{A character-string name of the slot.}
+\item{name}{The name of the slot.}
 
 \item{value}{A nreplacement value for the slot, which must be from a class
 compatible with the class defined for this slot in the definition of the
-class of \code{\link{ExperimentData-class}} or derived object.}
+class of either \code{\link{mSet-class}} or \code{\link{ExperimentData-class}}
+or derived object.}
 }
 \description{
 Extract or replace the content of a slot of an
-\code{\link{ExperimentData-class}} object.
+\code{\link{mSet-class}} or an \code{\link{ExperimentData-class}} object.
 }
