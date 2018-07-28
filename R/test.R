@@ -64,7 +64,7 @@
 # sample_table = sample_table(diet_data[,1:5])
 # multiSet = MultiSet(conc_table = conc_table, sample_table = sample_table)
 # ################################################################################
-# file = "/Users/chenghaozhu/Box Sync/UC Davis/Right Now/Researches/Zivkovic Lab/Egg Study/Result/Analysis/raw_data/biogenic_amines/mx 349859_Zhu_HILIC-QTOF MSMS_11-2017_submit.xlsx"
+# file = "/Users/chenghaozhu/Box Sync/UC Davis/Right Now/Researches/Zivkovic Lab/Egg Study/Result/Analysis/analysis/raw_data/biogenic_amines/mx 349859_Zhu_HILIC-QTOF MSMS_11-2017_submit.xlsx"
 # mset = import_wcmc_excel(
 #     file = file,
 #     sheet = "Submit",
@@ -74,8 +74,11 @@
 #     InChIKey = "InChI Key",
 #     experiment_type = "Biogenic Amines"
 # )
-# mset = subset_features(mset, is.na(feature_data(mset)$Annotation))
-# ################################################################################
-# my_func = function(a=NULL,b,c=NULL,d){
-#     as.list(match.call())
-# }
+# mset = subset_features(mset, !is.na(feature_data(mset)$InChIKey) | !is.na(feature_data(mset)$Annotation))
+#
+# cas_ids = cts_convert(mset$feature_data$InChIKey[!is.na(mset$feature_data$InChIKey)], from = "inchikey", to = "CAS")
+# names(cas_ids) = mset$feature_data$InChIKey[!is.na(mset$feature_data$InChIKey)]
+#
+# inchis = cs_convert(mset$feature_data$InChIKey[!is.na(mset$feature_data$InChIKey)],
+#                     from = "inchikey", to = "inchi")
+# names(inchis) = mset$feature_data$InChIKey[!is.na(mset$feature_data$InChIKey)]

@@ -120,7 +120,7 @@ MetabolomicsExperimentData = function(
 }
 ################################################################################
 #' @name MetabolomicsSet-class
-#' @title S4 class to store metabolomics dataset
+#' @title S4 class to store metabolomics experiment data
 #'
 #' @description
 #' This is a S4 class inherits from the virtual
