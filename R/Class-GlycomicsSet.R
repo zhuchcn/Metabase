@@ -106,6 +106,6 @@ GlycomicsSet = function(
     new("GlycomicsSet",
         conc_table      = conc_table,
         sample_table    = sample_table,
-        feaitre_data    = feature_data,
+        feature_data    = feature_data,
         experiment_data = experiment_data)
 }
