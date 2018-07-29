@@ -55,6 +55,7 @@
 #
 # mset = calibrate_lipidomics_wcmc(mset, cid = "InChIKey", class = "class", ESI = "ESI")
 # mset = filter_by_cv(mset, cv = "qc_cv", cid = "InChIKey")
+# mset$feature_data$Annotation = lipid_name_formater(mset$feature_data$Annotation)
 # ################################################################################
 # file = "/Users/chenghaozhu/Box Sync/UC Davis/Right Now/Researches/Zivkovic Lab/Egg Study/Result/Analysis/raw_data/diet_data/Diet Data.7.3.18xlsx.xlsx"
 # diet_data = read_excel(path = file, sheet = "Sheet1", range = "A1:Q81")

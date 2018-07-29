@@ -27,6 +27,7 @@ Collate:
     Methods-limma.R
     Methods-plot.R
     Methods-IO.R
+    Methods-LipidomicsSet.R
     test.R
     data-lipid.R
 Encoding: UTF-8

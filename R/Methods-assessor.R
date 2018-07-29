@@ -139,7 +139,7 @@ setAs(
 #' @title Extract or Replace A Slot of An mSet or ExperimentData object
 #' @description Extract or replace the content of a slot of an
 #' \code{\link{mSet-class}} or an \code{\link{ExperimentData-class}} object.
-#' @param x An \cide{\link{mSet-class}} or \code{\link{ExperimentData-class}} object.
+#' @param x An \code{\link{mSet-class}} or \code{\link{ExperimentData-class}} object.
 #' @param name The name of the slot.
 #' @export
 setMethod("$", "ExperimentData", function(x, name){

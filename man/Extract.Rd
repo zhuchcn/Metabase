@@ -37,7 +37,7 @@
 \S4method{[[}{mSet}(x, i, j, ...) <- value
 }
 \arguments{
-\item{x}{An \cide{\link{mSet-class}} or \code{\link{ExperimentData-class}} object.}
+\item{x}{An \code{\link{mSet-class}} or \code{\link{ExperimentData-class}} object.}
 
 \item{name}{The name of the slot.}
 
