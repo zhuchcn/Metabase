@@ -6,7 +6,8 @@
 MetabolomicsSet object}
 \usage{
 import_wcmc_excel(file, sheet, conc_range, sample_range, feature_range,
-  InChIKey = NULL, experiment_type = "metabolomics", institute = NULL)
+  InChIKey = NULL, experiment_type = "metabolomics",
+  institute = NULL)
 }
 \arguments{
 \item{file}{A character string to the path of the file.}

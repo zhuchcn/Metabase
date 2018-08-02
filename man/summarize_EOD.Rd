@@ -19,6 +19,17 @@ lipid class.}
 \description{
 Calculate the equivalen double bonds per 18 carbons of each
 lipid class. The input must be a \code{\link{LipidomicsSet-class}} object.
+The object must be contain a column in the feature_data slot with the
+annotation names of each feature. The feature name must be formated using the
+\code{\link{lipid_name_formater}} function.
+
+The equivalent of double bond is calculated using the equation below:
+
+\deqn{EOD_{18} = (\sum conc_{i,j} x ndb_{i,j}) / (\sum conc_{i,j} x nc_{i,j}) x 18 }
+
+The conc represents for the mol concentration, ndb for number of double
+bonds, and nc for number of carbon. The i stands for the ith sample, while j
+stands for the jth feature.
 }
 \author{
 Chenghao Zhu

@@ -4,8 +4,8 @@
 \alias{LipidomicsSet}
 \title{Construct a LipidomicsSet object}
 \usage{
-LipidomicsSet(conc_table = NULL, sample_table = NULL, feature_data = NULL,
-  experiment_data = NULL)
+LipidomicsSet(conc_table = NULL, sample_table = NULL,
+  feature_data = NULL, experiment_data = NULL)
 }
 \arguments{
 \item{conc_table}{A \code{\link{conc_table-class}} object that stores the

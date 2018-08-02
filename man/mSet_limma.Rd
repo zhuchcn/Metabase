@@ -4,8 +4,8 @@
 \alias{mSet_limma}
 \title{Run linear model with the limma package}
 \usage{
-mSet_limma(object, design, transform = function(x) {     log2(x + 1) }, coef,
-  p.value)
+mSet_limma(object, design, transform = function(x) {     log2(x + 1) },
+  coef, p.value)
 }
 \arguments{
 \item{object}{A \code{\link{mSet-class}} object.}

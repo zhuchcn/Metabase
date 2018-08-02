@@ -5,15 +5,11 @@
 \alias{subset_samples,mSet,character-method}
 \alias{subset_samples}
 \alias{subset_samples,mSet,logical-method}
-\alias{subset_samples}
 \alias{subset_samples,mSet,integer-method}
-\alias{subset_samples}
 \alias{subset_features,mSet,character-method}
 \alias{subset_features}
 \alias{subset_features,mSet,logical-method}
-\alias{subset_features}
 \alias{subset_features,mSet,integer-method}
-\alias{subset_features}
 \title{Subset an mSet object}
 \usage{
 \S4method{subset_samples}{mSet,character}(x, samples)

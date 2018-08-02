@@ -4,8 +4,8 @@
 \alias{GlycomicsSet}
 \title{Construct a GlycomicsSet object}
 \usage{
-GlycomicsSet(conc_table = NULL, sample_table = NULL, feature_data = NULL,
-  experiment_data = NULL)
+GlycomicsSet(conc_table = NULL, sample_table = NULL,
+  feature_data = NULL, experiment_data = NULL)
 }
 \arguments{
 \item{conc_table}{A \code{\link{conc_table-class}} object that stores the

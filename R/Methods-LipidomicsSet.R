@@ -108,7 +108,19 @@ nDoubleBonds = function(x){
 ################################################################################
 #' @title Calculate the average carbon chain length
 #' @description Calculate the average carbon chain length of each lipid class.
-#' The input must be a \code{\link{LipidomicsSet-class}} object.
+#' The input must be a \code{\link{LipidomicsSet-class}} object. The object
+#' must be contain a column in the feature_data slot with the annotation names
+#' of each feature. The feature name must be formated using the
+#' \code{\link{lipid_name_formater}} function.
+#'
+#' The average chain length is calculated using the equation below:
+#'
+#' \deqn{ACL = (\sum conc_{i,j} x nc_{i,j}) / (\sum con_{i,j} x nfa_{i,j})}
+#'
+#' The conc represents for the mol concentration, nc for number of carbon,
+#' and nfa for number of fatty acyls. The i stands for the ith sample, while j
+#' stands for the jth feature.
+#'
 #' @param object a \code{\link{LipidomicsSet-class}} object
 #' @param name character. The name of the feature variable that contains the
 #' annotation name. The annotation name must be formatted by the
@@ -125,6 +137,9 @@ summarize_ACL = function(object, name, class){
         stop("[ Metabase ] The lipid name variable " %+% name %+% " is not found. Please varify.", call. = FALSE)
     if(!class %in% colnames(object@feature_data))
         stop("[ Metabase ] The lipid class variable " %+% class %+% " is not found. Please varify.", call. = FALSE)
+
+    # calculated using the equation below:
+    # $ACL = \\frac{\\sum conc_{i,j} \\times nc_i}{\\sum con_{i,j} \\times nfa_i}$
 
     nCB = nCarbons(object@feature_data[, name])
     nFA = nFattyAcyls(object@feature_data[, name])
@@ -148,6 +163,18 @@ summarize_ACL = function(object, name, class){
 #' @title Calculate the Equivalent Double Bond per 18 carbons
 #' @description Calculate the equivalen double bonds per 18 carbons of each
 #' lipid class. The input must be a \code{\link{LipidomicsSet-class}} object.
+#' The object must be contain a column in the feature_data slot with the
+#' annotation names of each feature. The feature name must be formated using the
+#' \code{\link{lipid_name_formater}} function.
+#'
+#' The equivalent of double bond is calculated using the equation below:
+#'
+#' \deqn{EOD_{18} = (\sum conc_{i,j} x ndb_{i,j}) / (\sum conc_{i,j} x nc_{i,j}) x 18 }
+#'
+#' The conc represents for the mol concentration, ndb for number of double
+#' bonds, and nc for number of carbon. The i stands for the ith sample, while j
+#' stands for the jth feature.
+#'
 #' @param object a \code{\link{LipidomicsSet-class}} object
 #' @param name character. The name of the feature variable that contains the
 #' annotation name. The annotation name must be formatted by the
@@ -164,6 +191,9 @@ summarize_EOD = function(object, name, class){
         stop("[ Metabase ] The lipid name variable " %+% name %+% " is not found. Please varify.", call. = FALSE)
     if(!class %in% colnames(object@feature_data))
         stop("[ Metabase ] The lipid class variable " %+% class %+% " is not found. Please varify.", call. = FALSE)
+
+    # calculated using the equation below:
+    # $EOD_{18} = \\frac{ \\sum conc_{i,j} \\times ndb_{i,j} }{ \\sum conc_{i,j} \\times nc_{i,j}} \\times 18 $
 
     nDB = nDoubleBonds(object@feature_data[, name])
     nCB = nCarbons(object@feature_data[, name])

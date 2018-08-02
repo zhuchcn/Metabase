@@ -11,13 +11,9 @@
 \alias{[[<-,ExperimentData-method}
 \alias{[[<-}
 \alias{$,mSet-method}
-\alias{$}
 \alias{$<-,mSet-method}
-\alias{$<-}
 \alias{[[,mSet-method}
-\alias{[[}
 \alias{[[<-,mSet-method}
-\alias{[[<-}
 \title{Extract or Replace A Slot of An mSet or ExperimentData object}
 \usage{
 \S4method{$}{ExperimentData}(x, name)

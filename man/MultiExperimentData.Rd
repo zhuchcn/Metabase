@@ -3,7 +3,6 @@
 \docType{class}
 \name{MultiExperimentData}
 \alias{MultiExperimentData}
-\alias{MultiExperimentData}
 \title{S4 class to store experiment data for MultiSet}
 \usage{
 MultiExperimentData(experiment_type)

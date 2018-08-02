@@ -18,7 +18,18 @@ lipid class.}
 }
 \description{
 Calculate the average carbon chain length of each lipid class.
-The input must be a \code{\link{LipidomicsSet-class}} object.
+The input must be a \code{\link{LipidomicsSet-class}} object. The object
+must be contain a column in the feature_data slot with the annotation names
+of each feature. The feature name must be formated using the
+\code{\link{lipid_name_formater}} function.
+
+The average chain length is calculated using the equation below:
+
+\deqn{ACL = (\sum conc_{i,j} x nc_{i,j}) / (\sum con_{i,j} x nfa_{i,j})}
+
+The conc represents for the mol concentration, nc for number of carbon,
+and nfa for number of fatty acyls. The i stands for the ith sample, while j
+stands for the jth feature.
 }
 \author{
 Chenghao Zhu
