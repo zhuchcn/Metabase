@@ -83,3 +83,29 @@
 # inchis = cs_convert(mset$feature_data$InChIKey[!is.na(mset$feature_data$InChIKey)],
 #                     from = "inchikey", to = "inchi")
 # names(inchis) = mset$feature_data$InChIKey[!is.na(mset$feature_data$InChIKey)]
+################################################################################
+wcmc_adduct = read.delim("data-raw/adduct.tsv", stringsAsFactors = FALSE)
+# wcmc_adduct = mutate(
+#     wcmc_adduct,
+#     multiply = str_split_fixed(Ion.mass, " [+-] ", n=2)[,1],
+#     multiply = ifelse(grepl("M\\/\\d{1}", multiply),
+#                       1/as.integer(str_split_fixed(multiply, "\\/", n=2)[,2]),
+#                       multiply),
+#     multiply = gsub("(\\d{1})M", "\\1", multiply),
+#     multiply = gsub("M", "1", multiply),
+#     multiply = as.numeric(multiply),
+#     plus = as.numeric(str_split_fixed(Ion.mass, " [+-] ", n=2)[,2]),
+#     plus = ifelse(grepl("\\+", Ion.mass),
+#                   plus, -plus)
+# )
+
+`M-H2O+H` = data.frame(
+    Ion.name = "M-H2O+H",
+    Ion.mass = "M - 17.00384",
+    Charge = "1+",
+    Mult = 1,
+    Mass = -17.00384
+)
+wcmc_adduct = rbind(wcmc_adduct, `M-H2O+H`) %>%
+    column_to_rownames("Ion.name")
+

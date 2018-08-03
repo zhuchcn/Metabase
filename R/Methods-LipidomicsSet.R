@@ -41,6 +41,7 @@ lipid_name_formater = function(x){
     x = gsub("FA\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}.*", "FA \\1", x)
     # Ceramide
     x = gsub("^Ceramide\\s{,1}\\({,1}d(\\d{1,2}\\:\\d{1})\\){,1}.*", "Ceramide \\1 d",x)
+    x = gsub("^Cer{,1}\\({,1}d(\\d{2}\\:\\d{1})\\){,1}.*", "Ceramide \\1 d",x)
     # Gal-Gal-Cer
     x = gsub("^Gal-Gal-Cer\\s*\\({0,1}d(\\d{1,2}:\\d{1})\\){,1}.*", "Gal-Gal-Cer \\1 d",x)
     x = gsub("^Lactosylceramide\\s*\\(d{0,1}d(\\d{1,2}:\\d{1})\\){,1}.*", "Gal-Gal-Cer \\1 d",x)
@@ -50,10 +51,13 @@ lipid_name_formater = function(x){
     x = gsub("(L{0,1}P[CEASI])\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\2", x)
     x = gsub("(L{0,1}P[CEASI])\\s*\\(*([op]{1})-(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\3 \\2", x)
     x = gsub("Plasmenyl-(L{0,1}P[CEASI])\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\2 p", x)
+    # OxPC
+    x = gsub("OxPC\\s*\\(*(\\d{2}:\\d{1})\\)*.*", "PC \\1 ox", x)
     # SM
     x = gsub("SM\\s*\\(*d(\\d{1,2}:\\d{1})\\)*.*","SM \\1 d", x)
     # SM
     x = gsub("TG\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*","TG \\1", x)
+    x = gsub("TAG\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*","TG \\1", x)
     return(x)
 }
 
@@ -84,7 +88,7 @@ nCarbons = function(x){
 #' @export
 #' @author Chenghao Zhu
 nFattyAcyls = function(x){
-    class_acyls = c(3, rep(2, 10), rep(1, 8), 0)
+    class_acyls = c(3, rep(2, 11), rep(1, 8), 0)
     names(class_acyls) = c("TG", "PC", "PE", "PS", "PI", "PA", "SM", "Ceramide", "GlcCer", "Gal-Gal-Cer", "DG", "LPC", "LPE", "LPS", "LPI", "LPA", "FA", "CE", "MG", "Cholesterol")
     class = str_split_fixed(x, " ", 2)[,1]
     as.integer(class_acyls[class])
@@ -295,4 +299,17 @@ summarize_lipid_ratios = function(object, name, class){
 
     LipidomicsSet(conc_table = conc_table(ratios),
                   sample_table = sample_table(object))
+}
+################################################################################
+#' @title calculate molecular weight from m/z
+#' @description This function calculate the molecular weight according to the
+#' m/z and adduct ion species.
+#' @param species character value of the adduct ion species
+#' @param mz numeric value of the m/z
+#' @export
+mz2molwt = function(species, mz){
+    data("wcmc_adduct")
+    multiply = wcmc_adduct[species,]$Mult
+    plus = wcmc_adduct[species,]$Mass
+    (mz - plus) / multiply
 }

@@ -185,13 +185,14 @@ collapse_QC = function(object, qc_names){
 assign_lipid_class = function(x){
     get_a_class = function(x){
         classes = c('CE', 'Cholesteryl ester','Cholesterol','CUDA','LPC','LPE',
-                    'PC','PE','PG','SM', "Cer", 'Sphingosine','Ceramide','DG',
-                    'MG','MAG','TG','FA', "AC", 'GlcCer', 'ceramide',
+                    'PC','PE','PG', "PI", "PA", 'SM', "Cer", 'Sphingosine','Ceramide','DG',
+                    'MG','MAG','TAG', "TG",'FA', "AC", 'GlcCer', 'ceramide',
                     'Acylcarnitine')
         for(class in classes){
             if(grepl(class, x)){
                 if(class == "Cholesteryl ester") return("CE")
                 if(class == 'MAG')  return('MG')
+                if(class == "TAG") return("TG")
                 if(class == 'GlcCer') return('Cer')
                 if(class == 'ceramide') return('Cer')
                 if(class == "Ceramide") return("Cer")
