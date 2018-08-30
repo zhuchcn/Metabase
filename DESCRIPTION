@@ -21,10 +21,11 @@ Collate:
     Class-MetabolomicsSet.R
     Class-GlycomicsSet.R
     Class-multiSet.R
+    Class-MicrobiomeSet.R
     Methods-assessor.R
     Methods-mSet-show.R
     Methods-mSet.R
-    Methods-limma.R
+    Methods-stats.R
     Methods-plot.R
     Methods-IO.R
     Methods-LipidomicsSet.R

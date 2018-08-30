@@ -32,8 +32,8 @@ lipid_name_formater = function(x){
     # CE
     x = gsub("\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}\\s*Cholesteryl ester", "CE \\1", x)
     x = gsub("\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}\\s*CE", "CE \\1", x)
-    x = gsub("Cholesteryl ester\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "CE \\1", x)
-    x = gsub("CE\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "CE \\1", x)
+    x = gsub("Cholesteryl ester\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}.*", "CE \\1", x)
+    x = gsub("CE\\s*\\(*(\\d{2}\\:\\d{1})\\)*.*", "CE \\1", x)
     # DG
     x = gsub("DG\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "DG \\1", x)
     x = gsub("Diacylglycerol\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "DG \\1", x)
@@ -289,13 +289,17 @@ summarize_lipid_ratios = function(object, name, class){
 
     surface_lipids = c("PC", "PE", "PS", "PI", "PG", "PA", "LPC", "LPE", "LPS", "LPI", "LPA", "DG", "SM", "Cer", "MG", "Cholesterol")
     core_lipids = c("CE", "TG")
+    pl = c("PC", "PE", "PS", "PI", "PG", "PA", "LPC", "LPE", "LPS", "LPI", "LPA", "SM")
 
     surface = colSums(edata[rownames(edata) %in% surface_lipids,])
     core = colSums(edata[rownames(edata) %in% core_lipids,])
+    pl = colSums(edata[rownames(edata) %in% pl,])
+    ratios = rbind(edata["PC",]/pl, ratios)
+    ratios = rbind(edata["SM",]/pl, ratios)
     ratios = rbind(edata["PC",]/surface, ratios)
     ratios = rbind(edata["SM",]/surface, ratios)
     ratios = rbind(surface / core, ratios)
-    rownames(ratios)[1:3] = c("PC/surface", "SM/surface","surface/core")
+    rownames(ratios)[1:5] = c("surface/core", "SM/surface", "PC/surface", "SM/PL", "PC/PL")
 
     LipidomicsSet(conc_table = conc_table(ratios),
                   sample_table = sample_table(object))
