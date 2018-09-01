@@ -89,7 +89,7 @@ nCarbons = function(x){
 #' @author Chenghao Zhu
 nFattyAcyls = function(x){
     class_acyls = c(3, rep(2, 11), rep(1, 8), 0)
-    names(class_acyls) = c("TG", "PC", "PE", "PS", "PI", "PA", "SM", "Ceramide", "GlcCer", "Gal-Gal-Cer", "DG", "LPC", "LPE", "LPS", "LPI", "LPA", "FA", "CE", "MG", "Cholesterol")
+    names(class_acyls) = c("TG", "PC", "PE", "PS", "PI", "PA", "PG", "SM", "Ceramide", "GlcCer", "Gal-Gal-Cer", "DG", "LPC", "LPE", "LPS", "LPI", "LPA", "FA", "CE", "MG", "Cholesterol")
     class = str_split_fixed(x, " ", 2)[,1]
     as.integer(class_acyls[class])
 }

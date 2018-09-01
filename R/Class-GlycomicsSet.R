@@ -109,3 +109,13 @@ GlycomicsSet = function(
         feature_data    = feature_data,
         experiment_data = experiment_data)
 }
+################################################################################
+#' @export
+setMethod(
+    "show", signature = "GlycomicsSet",
+    definition = function(object){
+        cat(str_pad(">>>>>> Glycomics Experiment <<<<<<", 54, "left", " "))
+        cat("\n")
+        callNextMethod()
+    }
+)
