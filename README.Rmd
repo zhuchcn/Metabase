@@ -26,4 +26,4 @@ The mSet is a virtual class so it can not be constructed directly. There is curr
 
 ## Vignettes
 
-+ [Data input from WCMC report](https://zhuchcn.github.io/softwares/packages/Metabase/lipidomics_wcmc/)
++ [Data input from WCMC report](https://zhuchcn.github.io/docs/packages/Metabase/lipidomics_wcmc/)
