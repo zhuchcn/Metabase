@@ -3,7 +3,7 @@
 \docType{class}
 \name{MultiExperimentData}
 \alias{MultiExperimentData}
-\title{S4 class to store experiment data for MultiSet}
+\title{S4 class to store experiment data for MultxSet}
 \usage{
 MultiExperimentData(experiment_type)
 }
@@ -12,13 +12,13 @@ MultiExperimentData(experiment_type)
 }
 \description{
 This is the S4 class for stroing experiment data for the
-\code{\link{MultiSet-class}} object.
+\code{\link{MultxSet-class}} object.
 
 The constructor for \code{\link{MultiExperimentData-class}}.
 See the MultiExperimentData-class for more detail.
 }
 \seealso{
-\code{\link{MultiSet-class}}
+\code{\link{MultxSet-class}}
 }
 \author{
 Chenghao Zhu

@@ -1,8 +1,8 @@
 #' @name MultiExperimentData
-#' @title S4 class to store experiment data for MultiSet
+#' @title S4 class to store experiment data for MultxSet
 #' @description This is the S4 class for stroing experiment data for the
-#' \code{\link{MultiSet-class}} object.
-#' @seealso \code{\link{MultiSet-class}}
+#' \code{\link{MultxSet-class}} object.
+#' @seealso \code{\link{MultxSet-class}}
 #' @exportClass MultiExperimentData
 #' @author Chenghao Zhu
 setClass(
@@ -27,18 +27,18 @@ MultiExperimentData = function(experiment_type){
         experiment_type = experiment_type)
 }
 
-#' @name MultiSet-class
+#' @name MultxSet-class
 #' @title S4 class for mutiple experiment types
-#' @description The MultiSet class is a flexible data container for different
+#' @description The MultxSet class is a flexible data container for different
 #' type of experiment data, such as clinical values, dietary data, or any
 #' biochemical assies. Now it simply inherits from the virtual
 #' \code{\link{mSet-class}} without any modification or restriction. For more
 #' detail, please see the mSet help document.
-#' @seealso \code{\link{mSet-class}}, \code{\link{MultiSet}}
+#' @seealso \code{\link{mSet-class}}, \code{\link{MultxSet}}
 #' @author Chenghao Zhu
-#' @exportClass MultiSet
-MultiSet <- setClass(
-    Class = "MultiSet", contains = "mSet",
+#' @exportClass MultxSet
+setClass(
+    Class = "MultxSet", contains = "mSet",
     validity = function(object){
         if(!is.null(object@experiment_data) & class(object@experiment_data) != "MultiExperimentData")
             return("The experiment_data must be a MultiExperimentData object")
@@ -46,23 +46,23 @@ MultiSet <- setClass(
 )
 
 
-#' @title Construct a MultiSet class object
-#' @description The main constructor to creat a \code{\link{MultiSet-class}}
+#' @title Construct a MultxSet class object
+#' @description The main constructor to creat a \code{\link{MultxSet-class}}
 #' object.
 #' @param conc_table a \code{\link{conc_table-class}} object
 #' @param sample_table a \code{\link{sample_table-class}} object
 #' @param feature_data a \code{\link{feature_data-class}} object
 #' @param experiment_data a \code{\link{experiment_data-class}} object. The
-#' experiment_data slot in MultiSet is not defined so it can not be used yet.
+#' experiment_data slot in MultxSet is not defined so it can not be used yet.
 #'
-#' @seealso \code{\link{MultiSet-class}}, \code{\link{mSet-class}}
+#' @seealso \code{\link{MultxSet-class}}, \code{\link{mSet-class}}
 #' @author Chenghao Zhu
 #' @export
-MultiSet = function(conc_table      = NULL,
+MultxSet = function(conc_table      = NULL,
                     sample_table    = NULL,
                     feature_data    = NULL,
                     experiment_data = NULL){
-    new(Class = "MultiSet",
+    new(Class = "MultxSet",
         conc_table      = conc_table,
         sample_table    = sample_table,
         feature_data    = feature_data,
@@ -71,7 +71,7 @@ MultiSet = function(conc_table      = NULL,
 
 #' @export
 setMethod(
-    "show", signature = "MultiSet",
+    "show", signature = "MultxSet",
     definition = function(object){
         header = ">>>>>>>> " %+% object@experiment_data$experiment_type %+% " <<<<<<<<"
         cat(str_pad(header, width = 50, side = "left", pad = " "))
