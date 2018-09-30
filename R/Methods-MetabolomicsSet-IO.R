@@ -51,8 +51,9 @@ import_wcmc_excel = function(file,
         col_names = TRUE,
         na        = ""
     ) %>%
-        as.data.frame %>%
-        column_to_rownames("Label") %>%
+        as.data.frame
+    sample_table = column_to_rownames(sample_table,
+                                      colnames(sample_table)[1]) %>%
         t %>% as.data.frame
     # read feature_data
     feature_data = readxl::read_excel(

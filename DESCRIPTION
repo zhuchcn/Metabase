@@ -20,6 +20,7 @@ Collate:
     Class-mSet.R
     Class-MetabolomicsSet.R
     Class-GlycomicsSet.R
+    Class-ProteomicsSet.R
     Class-multiSet.R
     Class-MicrobiomeSet.R
     Methods-assessor.R
@@ -27,7 +28,7 @@ Collate:
     Methods-mSet.R
     Methods-stats.R
     Methods-plot.R
-    Methods-IO.R
+    Methods-MetabolomicsSet-IO.R
     Methods-LipidomicsSet.R
     test.R
     data-lipid.R
