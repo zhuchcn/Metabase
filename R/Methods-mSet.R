@@ -290,7 +290,7 @@ summarize_features = function(object, feature_var){
              variable.name = "sample_id",
              value.name = "concentration") %>%
         group_by(feature_var, sample_id) %>%
-        summarize(concentration = sum(concentration)) %>%
+        summarize(concentration = sum(concentration, na.rm = TRUE)) %>%
         dcast(feature_var~sample_id, value.var = "concentration") %>%
         column_to_rownames("feature_var") %>%
         as.matrix %>%
