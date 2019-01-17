@@ -84,7 +84,7 @@
 #                     from = "inchikey", to = "inchi")
 # names(inchis) = mset$feature_data$InChIKey[!is.na(mset$feature_data$InChIKey)]
 ################################################################################
-wcmc_adduct = read.delim("data-raw/adduct.tsv", stringsAsFactors = FALSE)
+# wcmc_adduct = read.delim("data-raw/adduct.tsv", stringsAsFactors = FALSE)
 # wcmc_adduct = mutate(
 #     wcmc_adduct,
 #     multiply = str_split_fixed(Ion.mass, " [+-] ", n=2)[,1],
@@ -99,13 +99,13 @@ wcmc_adduct = read.delim("data-raw/adduct.tsv", stringsAsFactors = FALSE)
 #                   plus, -plus)
 # )
 
-`M-H2O+H` = data.frame(
-    Ion.name = "M-H2O+H",
-    Ion.mass = "M - 17.00384",
-    Charge = "1+",
-    Mult = 1,
-    Mass = -17.00384
-)
-wcmc_adduct = rbind(wcmc_adduct, `M-H2O+H`) %>%
-    column_to_rownames("Ion.name")
+# `M-H2O+H` = data.frame(
+#     Ion.name = "M-H2O+H",
+#     Ion.mass = "M - 17.00384",
+#     Charge = "1+",
+#     Mult = 1,
+#     Mass = -17.00384
+# )
+# wcmc_adduct = rbind(wcmc_adduct, `M-H2O+H`) %>%
+#     column_to_rownames("Ion.name")
 
