@@ -21,7 +21,7 @@
 #' @author Chenghao Zhu
 #' @import ggplot2
 #' @export
-plot_boxplot = function(object, x, feature, rows, cols, line, color, ...){
+plot_boxplot = function(object, x, feature, rows = NULL, cols = NULL, line = NULL, color = NULL, ...){
 
     if(!requireNamespace("ggmetaplots")){
         stop("[ Metabase ] Can't find the ggmetaplot package. Please install it using:\n\n    devtools::install_github('zhuchcn/ggmetaplot')",
@@ -29,9 +29,11 @@ plot_boxplot = function(object, x, feature, rows, cols, line, color, ...){
     }
 
     args = as.list(match.call())[-c(1:2)]
+    args = Filter(Negate(is.null), args)
+
     names(args)[names(args) == "feature"] = "y"
 
-    sample_vars = unique(c(args$x, args$rows, args$cols, args$color, args$line))
+    sample_vars = unique(c(x, rows, cols, color, line))
 
     df = data.frame(
         Concentration = object@conc_table[feature,]
@@ -156,8 +158,143 @@ plot_qc_cv = function(object, mean, cv, log=TRUE){
         theme_bw()
 }
 
+################################################################################
+#' @title Plot normality boxplot of each individual feature
+#'
+#' @description This funciton first scale each feature using the \code{\link{scale}}
+#' function, then make a boxplot of the z-score of each feature. This is usful
+#' to check the overall normality of the dataset
+#'
+#' @param object A \code{\link{MetabolomicsSet-class}} object.
+#' @param sort A boolean variable indicating whether arrange the features according
+#' to their medians.
+#'
+#' @return A ggplot object
+#' @export
+#' @examples
+#' data(lipid)
+#' lipid = subset_features(lipid, 1:10)
+#' plot_normality_bxoplot(lipid)
+plot_normality_boxplot = function(object, sort = T){
+    if(!inherits(object, "mSet")) {
+        stop("[ Metabase ] Object must inherit form mSet")
+    }
+    conc_table = object$conc_table
 
+    df = conc_table %>%
+        apply(1, scale) %>% melt %>%
+        group_by(Var2) %>% mutate(median = median(value)) %>%
+        arrange(median) %>%
+        ungroup()
 
+    if(sort){
+        df = mutate(df, Var2 = factor(Var2, levels = unique(Var2)))
+    }
 
+    p = ggplot(df, aes(x = Var2, y = value)) +
+        geom_boxplot() +
+        coord_flip() +
+        labs(x = "", y = "z-score") +
+        theme_bw()
+    return(p)
+}
 
+################################################################################
+#' @title Normality density plot of each feature
+#'
+#' @description This funciton first scale each feature using the \code{\link{scale}}
+#' function, then make a density curve of the z-score of each feature. This is usful
+#' to check the overall normality of the dataset.
+#'
+#' @param object A \code{\link{MetabolomicsSet-class}} object.
+#' @param sort A boolean variable indicating whether arrange the features according
+#' to their medians.
+#'
+#' @return A ggplot object
+#' @export
+#' @seealso \code{\link{geom_density_ridges_gradient}}
+#' @examples
+#' data(lipid)
+#' lipid = subset_features(lipid, 1:10)
+#' plot_normality_ridges(lipid)
+plot_normality_ridges = function(object, sort = T){
+
+    if(!requireNamespace("ggridges")){
+        stop("[ Metabase ] Please install the ggridges package.")
+    }
+
+    if(!inherits(object, "mSet")) {
+        stop("[ Metabase ] Object must inherit form mSet")
+    }
+    conc_table = object$conc_table
+
+    df = conc_table %>%
+        apply(1, scale) %>% melt %>%
+        group_by(Var2) %>% mutate(median = median(value)) %>%
+        arrange(median) %>%
+        ungroup()
+
+    if(sort){
+        df = mutate(df, Var2 = factor(Var2, levels = unique(Var2)))
+    }
+
+    p = ggplot(df) +
+        ggridges::geom_density_ridges_gradient(aes(x = value, y = Var2, fill = ..x..)) +
+        scale_fill_viridis_c() +
+        guides(fill = guide_colorbar(title = "z-score")) +
+        labs(x = "z-score", y = "") +
+        theme_bw()
+    return(p)
+}
+
+################################################################################
+#' @title Histogram of medians of all features after scaling.
+#'
+#' @description This function makes a histogram of the medians of all features
+#' after scaling into z-scores. It is useful to check the overall normality
+#' of a given dataset.
+#'
+#' @param object A \code{\link{MetabolomicsSet-class}} object.
+#' @param bins Integer
+#' @param fill Character, the color fo fill the columns.
+#' @param density Boolean, whether to plot a density curve
+#' @param density_color Character, the color of density curve.
+#' @export
+#' @examples
+#' data(lipid)
+#' plot_median_hist(lipid)
+
+plot_median_hist = function(object, bins = 30, fill = "steelblue", density = TRUE,
+                            density_color = "black"){
+
+    if(!is.numeric(bins)){
+        stop("bins must be numeric")
+    }
+    if(bins <= 0){
+        stop("bins must be positive")
+    }
+    bins = round(bins)
+
+    if(!inherits(object, "mSet")) {
+        stop("[ Metabase ] Object must inherit form mSet")
+    }
+    conc_table = object$conc_table
+
+    df = conc_table %>%
+        apply(1, scale) %>% melt %>%
+        group_by(Var2) %>%
+        summarize(median = median(value)) %>%
+        ungroup()
+
+    p = ggplot(df, aes(x = median, y = ..density..)) +
+        geom_histogram(bins = bins, color = "white", fill = fill)
+
+    if(density){
+        p = p + geom_density(color = density_color)
+    }
+
+    p = p + theme_bw()
+
+    return(p)
+}
 
