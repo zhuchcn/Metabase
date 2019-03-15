@@ -359,9 +359,9 @@ export_txt = function(
 
     path = gsub("\\/$", "", path)
 
-    if(missing(prefix) | prefix == ""){
+    if(missing(prefix)){
         prefix = ""
-    } else {
+    } else if(prefix != "") {
         prefix = prefix %+% "_"
     }
 
