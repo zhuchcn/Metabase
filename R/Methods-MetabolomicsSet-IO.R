@@ -323,7 +323,7 @@ filter_by_cv = function(object, cv, cid){
 
 ################################################################################
 #' @title Export mSet object to separate text files
-#' @description This function exports a \link{\code{mSet-class}} object into separate
+#' @description This function exports a \code{\link{mSet-class}} object into separate
 #' text files (i.e. csv, tsv and txt).
 #' @param object An object that inherits from the \code{\link{mSet-class}}
 #' @param path A string. Must be an exist directory to save the text files.
@@ -331,7 +331,7 @@ filter_by_cv = function(object, cv, cid){
 #' nothing will be prepended.
 #' @param sep Can be either tab, comma, or any separater.
 #' @param quote A logical value (TRUE or FALSE) whether add quotes to each column.
-#' See \link{\code{write.table}}
+#' See \code{\link{write.table}}
 #' @param sample_names_head A string. The name of the column for sample names.
 #' @param feature_names_head A string. The name of the column for feature names.
 #'
@@ -342,6 +342,8 @@ filter_by_cv = function(object, cv, cid){
 #' dir.create("~/lipid-data")
 #' export_txt(lipid, "~/lipid-data")
 #' export_txt(lipid, "~/lipid-data", prefix = "lipid", sep = ",")
+#'
+#' @author Chenghao Zhu
 #'
 export_txt = function(
     object, path, prefix, sep="\t", quote = FALSE,

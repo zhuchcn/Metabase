@@ -19,14 +19,14 @@ nothing will be prepended.}
 \item{sep}{Can be either tab, comma, or any separater.}
 
 \item{quote}{A logical value (TRUE or FALSE) whether add quotes to each column.
-See \link{\code{write.table}}}
+See \code{\link{write.table}}}
 
 \item{sample_names_head}{A string. The name of the column for sample names.}
 
 \item{feature_names_head}{A string. The name of the column for feature names.}
 }
 \description{
-This function exports a \link{\code{mSet-class}} object into separate
+This function exports a \code{\link{mSet-class}} object into separate
 text files (i.e. csv, tsv and txt).
 }
 \examples{
@@ -35,4 +35,7 @@ dir.create("~/lipid-data")
 export_txt(lipid, "~/lipid-data")
 export_txt(lipid, "~/lipid-data", prefix = "lipid", sep = ",")
 
+}
+\author{
+Chenghao Zhu
 }
