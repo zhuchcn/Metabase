@@ -320,3 +320,82 @@ filter_by_cv = function(object, cv, cid){
     object = subset_features(object, feature_data(object)$keep)
     return(object)
 }
+
+################################################################################
+#' @title Export mSet object to separate text files
+#' @description This function exports a \link{\code{mSet-class}} object into separate
+#' text files (i.e. csv, tsv and txt).
+#' @param object An object that inherits from the \code{\link{mSet-class}}
+#' @param path A string. Must be an exist directory to save the text files.
+#' @param prefix A string to be prepend to the output file names. If is missing,
+#' nothing will be prepended.
+#' @param sep Can be either tab, comma, or any separater.
+#' @param quote A logical value (TRUE or FALSE) whether add quotes to each column.
+#' See \link{\code{write.table}}
+#' @param sample_names_head A string. The name of the column for sample names.
+#' @param feature_names_head A string. The name of the column for feature names.
+#'
+#' @import tibble
+#' @export
+#' @examples
+#' data(lipid)
+#' dir.create("~/lipid-data")
+#' export_txt(lipid, "~/lipid-data")
+#' export_txt(lipid, "~/lipid-data", prefix = "lipid", sep = ",")
+#'
+export_txt = function(
+    object, path, prefix, sep="\t", quote = FALSE,
+    sample_names_head = "Sample name",
+    feature_names_head = "Metabolite name"
+){
+    if(!inherits(object, "mSet")) {
+        stop("object must inherit from mSet")
+    }
+    if(!dir.exists(path)){
+        stop("The path does not exist")
+    }
+
+    path = gsub("\\/$", "", path)
+
+    if(missing(prefix) | prefix == ""){
+        prefix = ""
+    } else {
+        prefix = prefix %+% "_"
+    }
+
+    if(sep == "\t"){
+        fileType = ".tsv"
+    } else if(sep == ",") {
+        fileType = ".csv"
+    } else {
+        fileType = '.txt'
+    }
+
+    if(!is.null(object@sample_table)) {
+        samp = object@sample_table
+        samp = rownames_to_column(samp, sample_names_head)
+        samp_path = file.path(path, str_c(prefix, "sample_table", fileType))
+        write.table(
+            samp, file = samp_path, quote = quote, sep = sep,
+            row.names = FALSE, col.name = TRUE
+        )
+    }
+
+    if(!is.null(object@feature_data)) {
+        feat = object@feature_data
+        feat = rownames_to_column(feat, feature_names_head)
+        feat_path = file.path(path, str_c(prefix, "featture_data", fileType))
+        write.table(
+            feat, file = feat_path, quote = quote, sep = sep,
+            row.names = FALSE, col.name = TRUE
+        )
+    }
+
+    conc = as.data.frame(object@conc_table)
+    conc = rownames_to_column(conc, feature_names_head)
+    conc_path = file.path(path, str_c(prefix, "conc_table", fileType))
+    write.table(
+        conc, file = conc_path, quote = quote, sep = sep,
+        row.names = FALSE, col.name = TRUE
+    )
+}

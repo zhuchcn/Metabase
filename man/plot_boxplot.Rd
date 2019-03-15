@@ -4,7 +4,8 @@
 \alias{plot_boxplot}
 \title{Make a boxplot of a feature}
 \usage{
-plot_boxplot(object, x, feature, rows, cols, line, color, ...)
+plot_boxplot(object, x, feature, rows = NULL, cols = NULL,
+  line = NULL, color = NULL, ...)
 }
 \arguments{
 \item{object}{An \code{\link{mSet-class}} object}

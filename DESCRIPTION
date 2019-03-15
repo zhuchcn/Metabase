@@ -11,7 +11,8 @@ Imports:
     dplyr,
     reshape2,
     data.table,
-    ggplot2
+    ggplot2,
+    tibble
 Suggests:
     readxl,
     knitr,

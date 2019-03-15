@@ -8,7 +8,7 @@ MetabolomicsExperimentData(institute = NULL, experiment_type = NULL,
   instrument = NULL, resuspension_volumn_ul = NULL,
   injection_volumn_ul = NULL, data_processing_software = NULL,
   sample_volumn_ul = NULL, internal_standards = NULL,
-  conc_table_unit = NULL)
+  conc_table_unit = NULL, other = NULL)
 }
 \arguments{
 \item{institute}{character indicates the institute where the experiment was

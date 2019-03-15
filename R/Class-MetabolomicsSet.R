@@ -38,7 +38,8 @@ setClass(
         data_processing_software = "characterOrNULL",
         sample_volumn_ul         = "numericOrNULL",
         internal_standards       = "dataframeOrNULL",
-        conc_table_unit          = "characterOrNULL"
+        conc_table_unit          = "characterOrNULL",
+        other                    = "listOrNULL"
     ),
     contain = "ExperimentData",
     prototype = prototype(
@@ -50,7 +51,8 @@ setClass(
         data_processing_software = NULL,
         sample_volumn_ul         = NULL,
         internal_standards       = NULL,
-        conc_table_unit          = NULL
+        conc_table_unit          = NULL,
+        other                    = NULL
     )
 )
 ################################################################################
@@ -102,9 +104,11 @@ MetabolomicsExperimentData = function(
     data_processing_software = NULL,
     sample_volumn_ul         = NULL,
     internal_standards       = NULL,
-    conc_table_unit          = NULL
+    conc_table_unit          = NULL,
+    other                    = NULL
 ){
-    new(Class = "MetabolomicsExperimentData",
+    new(
+        Class = "MetabolomicsExperimentData",
         institute                = institute,
         experiment_type          = experiment_type,
         instrument               = instrument,
@@ -113,7 +117,9 @@ MetabolomicsExperimentData = function(
         data_processing_software = data_processing_software,
         sample_volumn_ul         = sample_volumn_ul,
         internal_standards       = internal_standards,
-        conc_table_unit          = conc_table_unit)
+        conc_table_unit          = conc_table_unit,
+        other                    = other
+    )
 }
 ################################################################################
 #' @name MetabolomicsSet-class
@@ -304,9 +310,11 @@ LipidomicsExperimentData = function(
     data_processing_software = NULL,
     sample_volumn_ul         = NULL,
     internal_standards       = NULL,
-    conc_table_unit          = NULL
+    conc_table_unit          = NULL,
+    other                    = NULL
 ){
-    new(Class = "LipidomicsExperimentData",
+    new(
+        Class = "LipidomicsExperimentData",
         institute                = institute,
         experiment_type          = experiment_type,
         instrument               = instrument,
@@ -315,7 +323,9 @@ LipidomicsExperimentData = function(
         data_processing_software = data_processing_software,
         sample_volumn_ul         = sample_volumn_ul,
         internal_standards       = internal_standards,
-        conc_table_unit          = conc_table_unit)
+        conc_table_unit          = conc_table_unit,
+        other                    = other
+    )
 }
 ################################################################################
 setClassUnion("LipidomicsExperimentDataOrNULL",

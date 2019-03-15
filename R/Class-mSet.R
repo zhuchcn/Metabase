@@ -165,6 +165,7 @@ setClass(
 setClassUnion("characterOrNULL",      c("NULL", "character"))
 setClassUnion("numericOrNULL",        c("NULL", "numeric"))
 setClassUnion("dataframeOrNULL",      c("NULL", "data.frame"))
+setClassUnion("listOrNULL",           c("NULL", "list"))
 setClassUnion("conc_tableOrNULL",     c("NULL", "conc_table"))
 setClassUnion("sample_tableOrNULL",   c("NULL", "sample_table"))
 setClassUnion("feature_dataOrNULL",   c("NULL", "feature_data"))
