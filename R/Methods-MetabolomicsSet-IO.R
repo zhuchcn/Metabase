@@ -113,17 +113,34 @@ import_wcmc_excel = function(file,
 #'
 #' @param object A \code{\link{mSet-class}} or derived object.
 #' @param file A character string indicates the output path.
+#' @param single_sheet A boolean value, whether write all data slots into a
+#' single sheet or seprate sheets.
+#' @param conc_sheet_name,samp_sheet_name,feat_sheet_name Character values, with
+#' each indicating the sheet name of each data slot.
 #'
 #' @return A Excle spreadsheet
 #' @export
 #' @author Chenghao Zhu
-export_excle = function(object, file){
-    if(!requireNamespace(xlsx))
+export_excle = function(
+    object, file, single_sheet = TRUE, conc_sheet_name = "intensity matrix",
+    samp_sheet_name = "sample info", feat_sheet_name = "features info"
+){
+    if(!requireNamespace("xlsx"))
         stop("The package xlsx is required for this function. Please install it.",
              call. = FALSE)
     if(!inherits(object, "mSet"))
         stop("Only mSet or derived classes are supported", call. = FALSE)
 
+    if(single_sheet){
+        export_excle_single_sheet(object, file)
+    } else {
+        export_excle_separate_sheets(
+            object, file, conc_sheet_name, samp_sheet_name, feat_sheet_name
+        )
+    }
+}
+
+export_excle_single_sheet = function(object, file){
     emt_mat = matrix("", ncol = ncol(object@feature_data),
                      nrow = ncol(object@sample_table)+1)
     featVar = c("feature_id", colnames(object@feature_data))
@@ -139,7 +156,28 @@ export_excle = function(object, file){
     dimnames(bot_mat) = NULL
     data = rbind(top_mat, bot_mat)
     xlsx::write.xlsx(data, file = file, row.names = FALSE, col.names = FALSE,
-               showNA = FALSE)
+                     showNA = FALSE, append = TRUE)
+}
+
+export_excle_separate_sheets = function(
+    object, file, conc_sheet_name, samp_sheet_name, feat_sheet_name
+){
+    conc = object@conc_table %>% as("matrix") %>% as.data.frame
+    conc = rownames_to_column(conc, "Feature")
+    xlsx::write.xlsx(conc, file, sheetName = conc_sheet_name,
+                     append = TRUE, row.names = FALSE)
+    if(!is.null(object@sample_table)){
+        samp = object@sample_table %>% as("data.frame")
+        samp = rownames_to_column(samp, "Sample")
+        xlsx::write.xlsx(samp, file, sheetName = samp_sheet_name,
+                         append = TRUE, row.names = FALSE)
+    }
+    if(!is.null(object@feature_data)){
+        feat = object@feature_data %>% as("data.frame")
+        feat = rownames_to_column(feat, "Feature")
+        xlsx::write.xlsx(feat, file, sheetName = feat_sheet_name,
+                         append = TRUE, row.names = FALSE)
+    }
 }
 
 ################################################################################

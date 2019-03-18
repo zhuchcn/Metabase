@@ -4,12 +4,20 @@
 \alias{export_excle}
 \title{Export mSet object into a Excle sheet}
 \usage{
-export_excle(object, file)
+export_excle(object, file, single_sheet = TRUE,
+  conc_sheet_name = "intensity matrix",
+  samp_sheet_name = "sample info", feat_sheet_name = "features info")
 }
 \arguments{
 \item{object}{A \code{\link{mSet-class}} or derived object.}
 
 \item{file}{A character string indicates the output path.}
+
+\item{single_sheet}{A boolean value, whether write all data slots into a
+single sheet or seprate sheets.}
+
+\item{conc_sheet_name, samp_sheet_name, feat_sheet_name}{Character values, with
+each indicating the sheet name of each data slot.}
 }
 \value{
 A Excle spreadsheet

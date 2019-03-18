@@ -25,3 +25,7 @@ The virtual super class *mSet* is the base of this package. It has 4 slots, a *c
 ## Vignettes
 
 + [Data input from WCMC report](https://zhuchcn.github.io/docs/packages/Metabase/lipidomics_wcmc/)
+
+## To do:
+
+- [ ] The ExperimentData-class is currently too strict. The structure should be more flexible to handle different study type.

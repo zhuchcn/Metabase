@@ -27,6 +27,10 @@
 #'
 #' @exportClass MetabolomicsExperimentData
 #' @author Chenghao Zhu
+# TODO The ExperimentData slot is too strict. The slot name and values should
+# be more flexible to deal with different type of studies. Make it inherit from
+# a list and define the some important elements in the validation method should
+# solve the problem.
 setClass(
     Class = "MetabolomicsExperimentData",
     representation = representation(
@@ -38,8 +42,7 @@ setClass(
         data_processing_software = "characterOrNULL",
         sample_volumn_ul         = "numericOrNULL",
         internal_standards       = "dataframeOrNULL",
-        conc_table_unit          = "characterOrNULL",
-        other                    = "listOrNULL"
+        conc_table_unit          = "characterOrNULL"
     ),
     contain = "ExperimentData",
     prototype = prototype(
@@ -51,8 +54,7 @@ setClass(
         data_processing_software = NULL,
         sample_volumn_ul         = NULL,
         internal_standards       = NULL,
-        conc_table_unit          = NULL,
-        other                    = NULL
+        conc_table_unit          = NULL
     )
 )
 ################################################################################
@@ -104,8 +106,7 @@ MetabolomicsExperimentData = function(
     data_processing_software = NULL,
     sample_volumn_ul         = NULL,
     internal_standards       = NULL,
-    conc_table_unit          = NULL,
-    other                    = NULL
+    conc_table_unit          = NULL
 ){
     new(
         Class = "MetabolomicsExperimentData",
@@ -117,8 +118,7 @@ MetabolomicsExperimentData = function(
         data_processing_software = data_processing_software,
         sample_volumn_ul         = sample_volumn_ul,
         internal_standards       = internal_standards,
-        conc_table_unit          = conc_table_unit,
-        other                    = other
+        conc_table_unit          = conc_table_unit
     )
 }
 ################################################################################
@@ -310,8 +310,7 @@ LipidomicsExperimentData = function(
     data_processing_software = NULL,
     sample_volumn_ul         = NULL,
     internal_standards       = NULL,
-    conc_table_unit          = NULL,
-    other                    = NULL
+    conc_table_unit          = NULL
 ){
     new(
         Class = "LipidomicsExperimentData",
@@ -323,8 +322,7 @@ LipidomicsExperimentData = function(
         data_processing_software = data_processing_software,
         sample_volumn_ul         = sample_volumn_ul,
         internal_standards       = internal_standards,
-        conc_table_unit          = conc_table_unit,
-        other                    = other
+        conc_table_unit          = conc_table_unit
     )
 }
 ################################################################################

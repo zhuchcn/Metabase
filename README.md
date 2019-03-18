@@ -14,16 +14,21 @@ The virtual super class *mSet* is the base of this package. It has 4
 slots, a *conc\_table* slot that contains the numeric concentration
 values for each sample and feature, a *sample\_table* slot that contains
 all the sample metadata, a *feature\_data* slot contains all the feature
-information from the experiment, and a “experiment\_data” slot that
-contains all the additional experiment information.
-
-The mSet is a virtual class so it can not be constructed directly. There
-is currently one class inherits from the mSet, the MetabolomicsSet, that
-is designated for metabolomics dataset. The ProteomicsSet and
-GlycomicsSet are on the way.
+information from the experiment, and a *experiment\_data* slot that
+contains all the additional experiment information. The mSet is a
+virtual class so it can not be constructed directly. There are several
+classes that inherit from it, MetabolomicsSet, LipidomicsSet,
+GlycomicsSet, MicrobiomeSet, and MultxSet. They do not have huge
+differences in terms of the design.
 
 Vignettes
 ---------
 
 -   [Data input from WCMC
     report](https://zhuchcn.github.io/docs/packages/Metabase/lipidomics_wcmc/)
+
+To do:
+------
+
+-   \[ \] The ExperimentData-class is currently too strict. The
+    structure should be more flexible to handle different study type.
