@@ -2,7 +2,7 @@
 title: "Introduction to Metabase"
 author: "Chenghao Zhu"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Introduction to Metabase}
   %\VignetteEngine{knitr::rmarkdown}
@@ -16,6 +16,233 @@ knitr::opts_chunk$set(
 )
 ```
 
-# 1. Motivation
+# 1. Data structure of high through-put experiments
 
-The fast development of sequencing and Mass Spectrometry techonologies has expended the possibility of biological research to a new level. 
+High though-put experiments including metabolomics, lipidomics, protomics, and microbiome usually share a very similar data structure when they are applied in a specific population to answer specific questions. A study with n samples and m features usually contains three portions of the data. A numeric $m \times n$ matrix that each number represents the concentration/abundance of the $j^{th}$ feature in $i^{th}$ sample, a $n \times k$ table of the sample information, and a $m \times l$ table of the feature information. In this package and in rest of this vignette, the three portions of the dataset are referred as `conc_table`, `sample_table`, and `feature_data`. 
+
+The term **feature** used here is sort of ambiguous. It can be the metabolites in a metabolomics study, lipids in a lipidomcis study, protein/peptide in a proteomics study, and OTU, genera, or phylums in a microbiome study. The `sample_table` usually contains the study design information, such as treatment group, dosage, age, and gender. While the `feature_data` contains the additional information of each feature. In a metabolomics/lipidomics study, it can contain the molecule weight, m/z value, ion mode, annotation (metabolite name), and chemical CID such as PubChem CID. In a proteomics study, it contains the protein name, sequence, gene name, database ID such as emsembl ID. And in a microbiome study, the `feature_table` contains the taxonomy labels in each level from kindom to species.
+
+The `Metabase` package is inspired from the bioconductor package [Biobase](https://bioconductor.org/packages/release/bioc/html/Biobase.html) and [phyloseq](https://joey711.github.io/phyloseq/). The former is the infrastructural package of bioconductor while the later is a package designated for microbiome data analysis. The Metabase package takes the data structure design of the two package, with an emphasis on the data analysis, manipulation, hypothesis testing and visualization.
+
+# 2. Classes
+
+## mSet-class and its children
+
+Metabase currently has four main data container classes designated for a specific type of experiment, **MetabolomicsSet**, **LipidomicsSet**, **ProteomicsSet**, **MicrobiomeSet**, and a generic class **MultxSet**. The **MultxSet** can be used as a container for general purpose such as dietary data, clinical values, anthropometric data, or ELISA data. All the classes above **inherits** from  a virtual class **mSet**. The **mSet** is not directly callable but it's only designed as a template for other classes. All mSet methods can be applied to either of its child classes. However, a methods defined in any of the child classes can not be applied to its siblings. The mSet class and its child classes must have four data slots, `conc_table`, `sample_table`, `feature_data`, and `experiment_data`. The `conc_table` slot must be a `conc_table-class`, the `sample_table` slot must be a `sample_table-class`, the `feature_data` slot must be a `feature_data-class`, while the `experiment_data` slot must be a `experiment_data-class`
+
+## conc_table-class
+
+The `conc_table-class` inherits from the native R class `matrix-class` with some constrains. A `conc_table-class` object must have samples in the columns and features in rows (i.e. each column being a sample and each row being a feature). Row and column names are required. The function `conc_table` is the constructor.
+
+```{r}
+library(Metabase)
+path = file.path(system.file("extdata", package = "Metabase"), "lipid_conc_table.csv")
+conc = read.csv(path, row.names = 1, header = TRUE)
+conc = as.matrix(conc)    # conc_table must be a numeric matrix
+is.numeric(conc)
+```
+
+```{r}
+conc_table = conc_table(conc)
+conc_table
+```
+
+## sample_table-class
+
+The `sample_table-class` inherits from the native R class `data.frame-class` with some constrains. A `sample_table-class` object must have samples in the rows and sample variables in its columns (i.e. each row being a sample and each column being a sample variable). Row and column names are required. When a `sample_table-class` object is used to construct a `mSet-class` child class object, the number of rows must equal to the number of columns of the `conc_table-class` object, and the row names of the sample_table must all equal to the column names of the conc_table. The function `sample_table` is the constructor.
+
+```{r}
+path = file.path(system.file("extdata", package = "Metabase"), "lipid_sample_table.csv")
+samp = read.csv(path, row.names = 1, header = TRUE)
+is.data.frame(samp)
+```
+
+```{r}
+sample_table = sample_table(samp)
+show(sample_table)
+```
+
+## feature_data-class
+
+The `feature_data-class` inherits from the native R class `data.frame-class` with some constrains. A `feature_data-class` object must have features in the rows and feature variables in its columns (i.e. each row being a feature and each column being a feature variable). Row and column names are required. When a `feature_data-class` object is used to construct a `mSet-class` child class object, the number of rows must equal to the number of rows of the `conc_table-class` object, and the row names of the sample_table must all equal to the row names of the conc_table. The function `feature_data` is the constructor.
+
+```{r}
+path = file.path(system.file("extdata", package = "Metabase"), "lipid_feature_data.csv")
+feat = read.csv(path, row.names = 1, header = TRUE)
+is.data.frame(feat)
+```
+
+```{r}
+feature_data = feature_data(feat)
+show(feature_data)
+```
+
+## experiment_data-class
+
+The `experiment_data-class` holds any additional experiment data.
+
+# 3. Data manipulation capability
+
+## Constructor
+
+The name of each mSet data container class is its own constructor. The `conc_table` slot is required, while the `sample_table`, `feature_data` and `experiment_data` are optional. To be noticed that, if the sample names of conc_table and sample_table, or the feature names of conc_table and feature_data don't match, the construction will fail with an error.
+
+```{r}
+mset = MetabolomicsSet(
+    conc_table = conc_table,
+    sample_table = sample_table,
+    feature_data = feature_data
+)
+mset
+```
+
+## Slot assessors
+
+Slot can be assessed by either using the slot name as a function, using the `$` function, or using `[[` function. The slots can also be re-assigned using `<-` or `=` in the same way.
+
+```{r}
+conc_table(mset)
+# sample_table(mset)
+# feature_data(mset)
+```
+
+```{r}
+show(mset$sample_table)
+# mset$conc_table
+# mset$feature_data
+```
+
+```{r}
+show(mset[['feature_data']])
+# mset[['conc_table']]
+# mset[['sample_data']]
+```
+
+## Data manipulation
+
+The function `nsamples` and `nfeatures` are used to get the number of samples and features of any mSet class data container.
+
+```{r}
+nsamples(mset)
+```
+
+```{r}
+nfeatures(mset)
+```
+
+Function `sampleNames` and `featureNames` are used to get the sample names and feature names of any mSet class data container.
+
+```{r}
+sampleNames(mset)
+```
+
+```{r}
+featureNames(mset)
+```
+
+Function `subset_samples` and `subset_features` are used to subset the mSet class data container by specifying either the indices, sampleNames/featureNames, or by a boolean (`TRUE` or `FALSE`) value.
+
+```{r}
+mset2 = subset_samples(mset, 1:10)
+mset2
+```
+
+```{r}
+mset2 = subset_samples(mset, c("MD101A", "MD101B", "MD102A", "MD102B"))
+mset2
+```
+
+```{r}
+mset2 = subset_samples(mset, mset$sample_table$Timepoint == "Pre")
+mset2
+```
+
+Function `transform_by_sample` and `transform_by_feature` are used to transform the `conc_table` slot in different margin. The former apply each sample at a time, while the later apply each feature at a time. They are similar to the `apply` function when the `MARGIN` parameter is set to 1 (for `transform_by_feature`) and 2 (for `transform_by_sample`). The second argument of the two functions are a function that must return an object with the sample nfeatures and nsamples
+
+Using the `scale` function, each sample but not each feature is scaled to 1. Vice versa.
+
+```{r}
+mset2 = transform_by_sample(mset, scale)
+```
+
+```{r}
+library(ggplot2); library(dplyr)
+cowplot::plot_grid(
+    data.frame(mean = colMeans(mset2$conc_table)) %>%
+        ggplot(aes(x = mean)) +
+        geom_histogram(),
+    data.frame(mean = rowMeans(mset2$conc_table)) %>%
+        ggplot(aes(x = mean)) +
+        geom_histogram(),
+    ncol = 2
+)
+```
+
+The `summarize_features` function will aggregate the conc_table according to a given feature variable. The example below will add all features with the sample lipid class together. The second argument must appear in the column names of the feature_data slot.
+
+```{r}
+unique(mset$feature_data$class)
+```
+
+
+```{r}
+mset2 = summarize_features(mset, "class")
+mset2
+```
+
+# Linear Model
+
+Metabase provides a quick solution for linear model testing using the [limma](https://bioconductor.org/packages/release/bioc/html/limma.html) package.
+
+```{r}
+design = model.matrix(
+    ~ Treatment * Timepoint + Subject,
+    data = as(mset$sample_table, "data.frame")
+)
+colnames(design)
+lm = mSet_limma(mset, design, coef = "TreatmentEXP:TimepointPre", 
+                p.value = "TreatmentEXP:TimepointPre")
+head(lm)
+```
+
+# Visualization
+
+Metabase provides some quick visualization functions.
+
+## Box plot
+
+```{r}
+plot_boxplot(mset, x = "Timepoint", feature = "Feature025")
+```
+
+```{r}
+plot_boxplot(mset, x = "Timepoint", feature = "Feature025", cols = "Treatment")
+```
+
+```{r}
+plot_boxplot(mset, x = "Timepoint", feature = "Feature025", cols = "Treatment",
+             color = "Subject")
+```
+
+```{r}
+plot_boxplot(mset, x = "Timepoint", feature = "Feature025", cols = "Treatment",
+             color = "Subject", line = "Subject")
+```
+
+## Median Histogram
+
+```{r}
+plot_median_hist(mset)
+```
+
+## Normality boxplot
+
+```{r}
+plot_normality_boxplot(subset_features(mset, 1:30))
+```
+
+## Normality ridges plot
+
+```{r}
+plot_normality_ridges(subset_features(mset, 1:30))
+```

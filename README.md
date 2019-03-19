@@ -24,6 +24,8 @@ differences in terms of the design.
 Vignettes
 ---------
 
+-   [Introduction to
+    Metabase](https://zhuchcn.github.io/docs/packages/Metabase/intro/)
 -   [Data input from WCMC
     report](https://zhuchcn.github.io/docs/packages/Metabase/lipidomics_wcmc/)
 

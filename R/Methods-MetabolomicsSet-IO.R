@@ -424,7 +424,7 @@ export_txt = function(
     if(!is.null(object@feature_data)) {
         feat = object@feature_data
         feat = rownames_to_column(feat, feature_names_head)
-        feat_path = file.path(path, str_c(prefix, "featture_data", fileType))
+        feat_path = file.path(path, str_c(prefix, "feature_data", fileType))
         write.table(
             feat, file = feat_path, quote = quote, sep = sep,
             row.names = FALSE, col.name = TRUE

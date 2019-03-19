@@ -24,6 +24,7 @@ The virtual super class *mSet* is the base of this package. It has 4 slots, a *c
 
 ## Vignettes
 
++ [Introduction to Metabase](https://zhuchcn.github.io/docs/packages/Metabase/intro/)
 + [Data input from WCMC report](https://zhuchcn.github.io/docs/packages/Metabase/lipidomics_wcmc/)
 
 ## To do:
