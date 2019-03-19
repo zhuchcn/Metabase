@@ -224,7 +224,11 @@ head(lm)
 
 # Visualization
 
-Metabase provides some quick visualization functions.
+Metabase provides some quick visualization functions. Metabase's plot functions were mostly build on top of the `ggmetaplots` package. Install from github before using it.
+
+```{r eval=FALSE}
+devtools::install_github("zhuchcn/ggmetaplots")
+```
 
 ## Box plot
 
