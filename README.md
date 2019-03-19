@@ -6,8 +6,11 @@ Description
 -----------
 
 This is a R package that provides a solution to handle data from
-quantitative experiments such as metabolomics and proteomics. It uses
-R’s S4 object oriented programing system, inspired by the bioconductor R
+quantitative experiments such as metabolomics and proteomics. It aims to
+reduce the data analysis workload, simplify tedious and repeating steps
+during data cleaning, transforming, summarizing and visualizing, and
+help researchers to analyze and explore their data easily. It uses R’s
+S4 object oriented programing system, inspired by the bioconductor R
 package Biobase and phyloseq for sequencing data.
 
 The virtual super class *mSet* is the base of this package. It has 4

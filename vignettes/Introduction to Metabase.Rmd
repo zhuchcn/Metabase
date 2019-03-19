@@ -9,6 +9,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<style>
+.alert {
+    padding-left: 65px;
+    padding-right: 5px;
+    margin-right: 150px;
+}
+.alert p {
+    padding: 0px
+}
+</style>
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -16,15 +27,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-# 1. Data structure of high through-put experiments
+# Data structure of high through-put experiments
 
-High though-put experiments including metabolomics, lipidomics, protomics, and microbiome usually share a very similar data structure when they are applied in a specific population to answer specific questions. A study with n samples and m features usually contains three portions of the data. A numeric $m \times n$ matrix that each number represents the concentration/abundance of the $j^{th}$ feature in $i^{th}$ sample, a $n \times k$ table of the sample information, and a $m \times l$ table of the feature information. In this package and in rest of this vignette, the three portions of the dataset are referred as `conc_table`, `sample_table`, and `feature_data`. 
+High though-put experiments such as metabolomics, lipidomics, protomics, and microbiome usually share a very similar data structure when they are applied in a specific population to answer specific questions. A study with n samples and m features usually contains three portions of the data. A numeric $m \times n$ matrix that each number represents the concentration/abundance of the $j^{th}$ feature in $i^{th}$ sample, a $n \times k$ table of the sample information, and a $m \times l$ table of the feature information. In this package and in rest of this vignette, the three portions of the dataset are referred as `conc_table`, `sample_table`, and `feature_data`. 
 
-The term **feature** used here is sort of ambiguous. It can be the metabolites in a metabolomics study, lipids in a lipidomcis study, protein/peptide in a proteomics study, and OTU, genera, or phylums in a microbiome study. The `sample_table` usually contains the study design information, such as treatment group, dosage, age, and gender. While the `feature_data` contains the additional information of each feature. In a metabolomics/lipidomics study, it can contain the molecule weight, m/z value, ion mode, annotation (metabolite name), and chemical CID such as PubChem CID. In a proteomics study, it contains the protein name, sequence, gene name, database ID such as emsembl ID. And in a microbiome study, the `feature_table` contains the taxonomy labels in each level from kindom to species.
+The term **feature** used here is sort of ambiguous. It can be referred to the metabolites in a metabolomics study, lipids in a lipidomcis study, proteins/peptides in a proteomics study, and OTUs, genera, or phylums in a microbiome study. The `sample_table` usually contains the study design information, such as treatment group, dosage, age, and gender. While the `feature_data` contains the additional information of each feature. In a metabolomics/lipidomics study, it can contain the molecule weight, m/z value, ion mode, annotation (metabolite name), and chemical CID such as PubChem CID. In a proteomics study, it contains the protein name, sequence, gene name, database ID such as emsembl ID. And in a microbiome study, the `feature_table` contains the taxonomy labels in each level from kindom to species.
 
 The `Metabase` package is inspired from the bioconductor package [Biobase](https://bioconductor.org/packages/release/bioc/html/Biobase.html) and [phyloseq](https://joey711.github.io/phyloseq/). The former is the infrastructural package of bioconductor while the later is a package designated for microbiome data analysis. The Metabase package takes the data structure design of the two package, with an emphasis on the data analysis, manipulation, hypothesis testing and visualization.
 
-# 2. Classes
+# Classes
 
 ## mSet-class and its children
 
@@ -33,6 +44,12 @@ Metabase currently has four main data container classes designated for a specifi
 ## conc_table-class
 
 The `conc_table-class` inherits from the native R class `matrix-class` with some constrains. A `conc_table-class` object must have samples in the columns and features in rows (i.e. each column being a sample and each row being a feature). Row and column names are required. The function `conc_table` is the constructor.
+
+<div class="alert alert-info">
+The sample data files used in this vignette come with the package. If you would like to explore the sample data on your own, you can either copy them to your own directory, or download them using the links (right click and choose save link as):
+
+[[lipid_conc_table.csv](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/lipid_conc_table.csv)] [[lipid_sample_table.csv](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/lipid_sample_table.csv)] [[lipid_feature_data.csv](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/lipid_feature_data.csv)]
+</div>
 
 ```{r}
 library(Metabase)
@@ -81,7 +98,7 @@ show(feature_data)
 
 The `experiment_data-class` holds any additional experiment data.
 
-# 3. Data manipulation capability
+# Data manipulation capability
 
 ## Constructor
 
@@ -159,8 +176,6 @@ mset2
 
 Function `transform_by_sample` and `transform_by_feature` are used to transform the `conc_table` slot in different margin. The former apply each sample at a time, while the later apply each feature at a time. They are similar to the `apply` function when the `MARGIN` parameter is set to 1 (for `transform_by_feature`) and 2 (for `transform_by_sample`). The second argument of the two functions are a function that must return an object with the sample nfeatures and nsamples
 
-Using the `scale` function, each sample but not each feature is scaled to 1. Vice versa.
-
 ```{r}
 mset2 = transform_by_sample(mset, scale)
 ```
@@ -177,6 +192,8 @@ cowplot::plot_grid(
     ncol = 2
 )
 ```
+
+The figure above shows that using the `scale` function, each sample but not each feature is scaled to 0. Vice versa.
 
 The `summarize_features` function will aggregate the conc_table according to a given feature variable. The example below will add all features with the sample lipid class together. The second argument must appear in the column names of the feature_data slot.
 

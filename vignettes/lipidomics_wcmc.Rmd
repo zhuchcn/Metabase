@@ -31,16 +31,9 @@ devtools::install_github("zhuchcn/Metabase")
 
 ## Data
 
-The data used in this vignette is a lipidomics experiment from a cross-over nutritional intervention study. 10 subjects were given 2 dietary treatment, and blood samples were taken before and after each treatment.
+The data used in this vignette is a lipidomics experiment from a cross-over nutritional intervention study. 10 subjects were given 2 dietary treatment, and blood samples were taken before and after each treatment. The sample data comes in the package. If you would like to explore the sample data on your own, you can either copy them to your own directory, or download them using the link (right click and choose save link as):
 
-Data can be downloaed from here.
-
-```{r, eval = F}
-data.raw = "https://raw.githubusercontent.com/zhuchcn/Metabase/master/data-raw/302870_Zhu_CSH-QTOF_lipidomics.xlsx"
-standards = "https://raw.githubusercontent.com/zhuchcn/Metabase/master/data-raw/wcmc_lipidomics_standards.csv"
-download.file(url = data.raw,  destfile = "")
-download.file(url = standards, destfile = "wcmc_lipidomics_standards.csv")
-```
+[[Download sample data](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/CSH-QTOF_lipidomics.xlsx)] [[Download standards](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/wcmc_lipidomics_standards.csv)]
 
 ## Data import
 
@@ -58,7 +51,7 @@ Arguments:
 
 ```{r}
 library(Metabase)
-file = "302870_Zhu_CSH-QTOF_lipidomics.xlsx"
+file = file.path(system.file("extdata", package = "Metabase"), "CSH-QTOF_lipidomics.xlsx")
 mset = import_wcmc_excel(
     file            = file, 
     sheet           = "Submit",
@@ -134,7 +127,8 @@ mset = transform_by_feature(
 The west coast metabolomics center's lipidomics assay spikes 15 complex lipid internal standards into each sample during analysis. Each of the 15 complex lipid internal standards represents a lipid class. To see the spike information, load the following csv file.
 
 ```{r}
-internal_standards = read.csv("wcmc_lipidomics_standards.csv")
+file = file.path(system.file("extdata", package = "Metabase"), "wcmc_lipidomics_standards.csv")
+internal_standards = read.csv(file)
 head(internal_standards)
 ```
 
