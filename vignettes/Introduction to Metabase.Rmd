@@ -133,11 +133,11 @@ nfeatures(mset)
 Function `sampleNames` and `featureNames` are used to get the sample names and feature names of any mSet class data container.
 
 ```{r}
-sampleNames(mset)
+head(sampleNames(mset), 10)
 ```
 
 ```{r}
-featureNames(mset)
+head(featureNames(mset), 10)
 ```
 
 Function `subset_samples` and `subset_features` are used to subset the mSet class data container by specifying either the indices, sampleNames/featureNames, or by a boolean (`TRUE` or `FALSE`) value.
@@ -165,15 +165,15 @@ Using the `scale` function, each sample but not each feature is scaled to 1. Vic
 mset2 = transform_by_sample(mset, scale)
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(ggplot2); library(dplyr)
 cowplot::plot_grid(
     data.frame(mean = colMeans(mset2$conc_table)) %>%
         ggplot(aes(x = mean)) +
-        geom_histogram(),
+        geom_histogram(bins = 20),
     data.frame(mean = rowMeans(mset2$conc_table)) %>%
         ggplot(aes(x = mean)) +
-        geom_histogram(),
+        geom_histogram(bins = 30),
     ncol = 2
 )
 ```
@@ -220,6 +220,7 @@ plot_boxplot(mset, x = "Timepoint", feature = "Feature025", cols = "Treatment")
 ```
 
 ```{r}
+mset$sample_table$Subject = factor(mset$sample_table$Subject)
 plot_boxplot(mset, x = "Timepoint", feature = "Feature025", cols = "Treatment",
              color = "Subject")
 ```
