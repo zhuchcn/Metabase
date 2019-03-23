@@ -31,6 +31,18 @@ plot_boxplot = function(object, x, feature, rows = NULL, cols = NULL, line = NUL
     args = as.list(match.call())[-c(1:2)]
     args = Filter(Negate(is.null), args)
 
+    # the devil match.call function returns symbols, unevaluated symbols if
+    # variables are parsed (why do you do this R!!). The solution is to eval
+    # the value in its parent environment.
+    args = lapply(args, function(arg){
+        if(is.symbol(arg)){
+            eval(arg, envir = call.envir)
+        } else {
+            arg
+        }
+    })
+
+    # because that's what I did in ggmetaplots
     names(args)[names(args) == "feature"] = "y"
 
     sample_vars = unique(c(x, rows, cols, color, line))
