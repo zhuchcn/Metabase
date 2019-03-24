@@ -34,6 +34,7 @@ plot_boxplot = function(object, x, feature, rows = NULL, cols = NULL, line = NUL
     # the devil match.call function returns symbols, unevaluated symbols if
     # variables are parsed (why do you do this R!!). The solution is to eval
     # the value in its parent environment.
+    call.envir = parent.frame(1)
     args = lapply(args, function(arg){
         if(is.symbol(arg)){
             eval(arg, envir = call.envir)
