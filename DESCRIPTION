@@ -2,7 +2,7 @@ Package: Metabase
 Type: Package
 Title: Data container, handling, and visualization for high through-put quantitative experiment data.
 Version: 0.1.0
-Author: Chenghao Zhu
+Author: Chenghao Zhu, Ruihan Zhang
 Maintainer: Chenghao Zhu <chhzhu@ucdavis.edu>
 Description:
 License: What license is it under?

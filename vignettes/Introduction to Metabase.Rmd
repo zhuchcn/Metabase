@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Metabase"
-author: "Chenghao Zhu"
+author: "Chenghao Zhu, Ruihan Zhang"
 date: "`r Sys.Date()`"
 output: BiocStyle::html_document
 vignette: >
@@ -29,24 +29,24 @@ knitr::opts_chunk$set(
 
 # Data structure of high through-put experiments
 
-High though-put experiments such as metabolomics, lipidomics, protomics, and microbiome usually share a very similar data structure when they are applied in a specific population to answer specific questions. A study with n samples and m features usually contains three portions of the data. A numeric $m \times n$ matrix that each number represents the concentration/abundance of the $j^{th}$ feature in $i^{th}$ sample, a $n \times k$ table of the sample information, and a $m \times l$ table of the feature information. In this package and in rest of this vignette, the three portions of the dataset are referred as `conc_table`, `sample_table`, and `feature_data`. 
+High-throughput 'omics' studies such as metabolomics, lipidomics, protomics and microbiome usually share a very similar data structure when they are applied in a specific population to answer specific questions. A study with n samples and m features usually contains three portions of the data. A numeric $m \times n$ matrix that each number represents the concentration/abundance of the $j^{th}$ feature in $i^{th}$ sample, a $n \times k$ table of the sample information, and a $m \times l$ table of the feature information. In this package and in the rest of this vignette, the three parts of the dataset are referred as `conc_table`, `sample_table`, and `feature_data`. 
 
-The term **feature** used here is sort of ambiguous. It can be referred to the metabolites in a metabolomics study, lipids in a lipidomcis study, proteins/peptides in a proteomics study, and OTUs, genera, or phylums in a microbiome study. The `sample_table` usually contains the study design information, such as treatment group, dosage, age, and gender. While the `feature_data` contains the additional information of each feature. In a metabolomics/lipidomics study, it can contain the molecule weight, m/z value, ion mode, annotation (metabolite name), and chemical CID such as PubChem CID. In a proteomics study, it contains the protein name, sequence, gene name, database ID such as emsembl ID. And in a microbiome study, the `feature_table` contains the taxonomy labels in each level from kindom to species.
+**Feature** is a generalized term. It can be referred to metabolites in a metabolomics study, lipids in a lipidomcis study, proteins/peptides in a proteomics study, and OTUs, genera, or phylums in a microbiome study. The `sample_table` usually contains the study design information, such as treatment group, dosage, age, and gender. While the `feature_data` contains the additional information of each feature. In a metabolomics/lipidomics study, it may contain the molecule weight, m/z value, ion mode, annotation(metabolite name), and chemical CID such as PubChem CID. In a proteomics study, it may contain the protein name, sequence, gene name, database ID such as emsembl ID. In a microbiome study, the `feature_table` contains the taxonomy labels in each level from kingdom to species.
 
-The `Metabase` package is inspired from the bioconductor package [Biobase](https://bioconductor.org/packages/release/bioc/html/Biobase.html) and [phyloseq](https://joey711.github.io/phyloseq/). The former is the infrastructural package of bioconductor while the later is a package designated for microbiome data analysis. The Metabase package takes the data structure design of the two package, with an emphasis on the data analysis, manipulation, hypothesis testing and visualization.
+The `Metabase` package is inspired by the bioconductor package [Biobase](https://bioconductor.org/packages/release/bioc/html/Biobase.html) and [phyloseq](https://joey711.github.io/phyloseq/). The former is the infrastructural package of bioconductor while the latter is a package designated for microbiome data analysis. The Metabase package takes the data structure design of the two package, with an emphasis on the data analysis, manipulation, hypothesis testing and visualization.
 
 # Classes
 
 ## mSet-class and its children
 
-Metabase currently has four main data container classes designated for a specific type of experiment, **MetabolomicsSet**, **LipidomicsSet**, **ProteomicsSet**, **MicrobiomeSet**, and a generic class **MultxSet**. The **MultxSet** can be used as a container for general purpose such as dietary data, clinical values, anthropometric data, or ELISA data. All the classes above **inherits** from  a virtual class **mSet**. The **mSet** is not directly callable but it's only designed as a template for other classes. All mSet methods can be applied to either of its child classes. However, a methods defined in any of the child classes can not be applied to its siblings. The mSet class and its child classes must have four data slots, `conc_table`, `sample_table`, `feature_data`, and `experiment_data`. The `conc_table` slot must be a `conc_table-class`, the `sample_table` slot must be a `sample_table-class`, the `feature_data` slot must be a `feature_data-class`, while the `experiment_data` slot must be a `experiment_data-class`
+Metabase currently has four main data container classes designed for experiments with specific purposes, **MetabolomicsSet**, **LipidomicsSet**, **ProteomicsSet**, **MicrobiomeSet**, and a generic class **MultxSet**. The **MultxSet** can be used as a container for general experiment data such as dietary data, clinical values, anthropometric data, or ELISA data. All the classes above **inherits** from  a virtual class called **mSet**. The **mSet** is a template for other classes so it is not directly callable. All mSet methods can be applied to each of its child classes. However, a method defined in any of the child classes cannot be applied to its siblings. The mSet class and its child classes must include four data slots: `conc_table`, `sample_table`, `feature_data`, and `experiment_data`. The `conc_table` slot must be a `conc_table-class`, the `sample_table` slot must be a `sample_table-class`, the `feature_data` slot must be a `feature_data-class` and the `experiment_data` slot must be a `experiment_data-class`.
 
 ## conc_table-class
 
-The `conc_table-class` inherits from the native R class `matrix-class` with some constrains. A `conc_table-class` object must have samples in the columns and features in rows (i.e. each column being a sample and each row being a feature). Row and column names are required. The function `conc_table` is the constructor.
+The `conc_table-class` inherits from the native R class `matrix-class` with some constrains. A `conc_table-class` object must have samples in the columns and features in rows (i.e. each column being a subject and each row being a metabolite). Row and column names are required. The function `conc_table` is the constructor.
 
 <div class="alert alert-info">
-The sample data files used in this vignette come with the package. If you would like to explore the sample data on your own, you can either copy them to your own directory, or download them using the links (right click and choose save link as):
+The sample data files used in this vignette come with the package. If you would like to explore the sample data on your own, you can either copy them to your own directory, or download them using the links (right click and choose ‘save link as’):
 
 [[lipid_conc_table.csv](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/lipid_conc_table.csv)] [[lipid_sample_table.csv](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/lipid_sample_table.csv)] [[lipid_feature_data.csv](https://raw.githubusercontent.com/zhuchcn/Metabase/master/inst/extdata/lipid_feature_data.csv)]
 </div>
@@ -66,7 +66,11 @@ conc_table
 
 ## sample_table-class
 
-The `sample_table-class` inherits from the native R class `data.frame-class` with some constrains. A `sample_table-class` object must have samples in the rows and sample variables in its columns (i.e. each row being a sample and each column being a sample variable). Row and column names are required. When a `sample_table-class` object is used to construct a `mSet-class` child class object, the number of rows must equal to the number of columns of the `conc_table-class` object, and the row names of the sample_table must all equal to the column names of the conc_table. The function `sample_table` is the constructor.
+The `sample_table-class` inherits from the native R class `data.frame-class` with some constrains. A `sample_table-class` object must have samples in the rows and sample variables in the columns. Row and column names are required. When a `sample_table-class` object is used to construct a `mSet-class` child class object, the number of rows must be equal to the number of columns of the `conc_table-class` object, and the row names of the `sample_table` must be equal to the column names of the `conc_table`. The function `sample_table` is the constructor.
+
+<div class="alert alert-danger">
+The number of feature names and of sample names are required to be equal. This is a way of keeping samples and features consistant during further data manipulations including data transformation and summarization.
+</div>
 
 ```{r}
 path = file.path(system.file("extdata", package = "Metabase"), "lipid_sample_table.csv")
@@ -81,7 +85,7 @@ show(sample_table)
 
 ## feature_data-class
 
-The `feature_data-class` inherits from the native R class `data.frame-class` with some constrains. A `feature_data-class` object must have features in the rows and feature variables in its columns (i.e. each row being a feature and each column being a feature variable). Row and column names are required. When a `feature_data-class` object is used to construct a `mSet-class` child class object, the number of rows must equal to the number of rows of the `conc_table-class` object, and the row names of the sample_table must all equal to the row names of the conc_table. The function `feature_data` is the constructor.
+The `feature_data-class` inherits from the native R class `data.frame-class` with some constrains. A `feature_data-class` object must have features in the rows and feature variables in the columns. Row and column names are required. When a `feature_data-class` object is used to construct a `mSet-class` child class object, the number of rows must be equal to the number of rows of the `conc_table-class` object, and the row names of the `sample_table` must be equal to the row names of the `conc_table`. The function `feature_data` is the constructor.
 
 ```{r}
 path = file.path(system.file("extdata", package = "Metabase"), "lipid_feature_data.csv")
@@ -102,7 +106,7 @@ The `experiment_data-class` holds any additional experiment data.
 
 ## Constructor
 
-The name of each mSet data container class is its own constructor. The `conc_table` slot is required, while the `sample_table`, `feature_data` and `experiment_data` are optional. To be noticed that, if the sample names of conc_table and sample_table, or the feature names of conc_table and feature_data don't match, the construction will fail with an error.
+The name of each mSet data container class is its own constructor. The `conc_table` slot is required, while the `sample_table`, `feature_data` and `experiment_data` are optional. Notice if the sample names of `conc_table` and `sample_table`, or the feature names of `conc_table` and `feature_data` don't match, the construction will fail.
 
 ```{r}
 mset = MetabolomicsSet(
@@ -115,7 +119,7 @@ mset
 
 ## Slot assessors
 
-Slot can be assessed by either using the slot name as a function, using the `$` function, or using `[[` function. The slots can also be re-assigned using `<-` or `=` in the same way.
+Slot can be assessed by using the slot name as a function, using the `$` function, or using the `[[` function. The slots can also be re-assigned using `<-` or `=`.
 
 ```{r}
 conc_table(mset)
@@ -157,7 +161,7 @@ head(sampleNames(mset), 10)
 head(featureNames(mset), 10)
 ```
 
-Function `subset_samples` and `subset_features` are used to subset the mSet class data container by specifying either the indices, sampleNames/featureNames, or by a boolean (`TRUE` or `FALSE`) value.
+Function `subset_samples` and `subset_features` are used to subset the mSet class data container by specifying either the indices, sampleNames/featureNames, or a boolean (`TRUE` or `FALSE`) value.
 
 ```{r}
 mset2 = subset_samples(mset, 1:10)
@@ -174,7 +178,7 @@ mset2 = subset_samples(mset, mset$sample_table$Timepoint == "Pre")
 mset2
 ```
 
-Function `transform_by_sample` and `transform_by_feature` are used to transform the `conc_table` slot in different margin. The former apply each sample at a time, while the later apply each feature at a time. They are similar to the `apply` function when the `MARGIN` parameter is set to 1 (for `transform_by_feature`) and 2 (for `transform_by_sample`). The second argument of the two functions are a function that must return an object with the sample nfeatures and nsamples
+Function `transform_by_sample` and `transform_by_feature` are used to transform the `conc_table` slot into different margins. The former apply each sample at a time, while the latter apply each feature at a time. The second argument of the two functions is required for returning an altered array with the same dimensions as the original one. They are similar to the `apply` function when the `MARGIN` parameter is set to 1 (for `transform_by_feature`) and 2 (for `transform_by_sample`).
 
 ```{r}
 mset2 = transform_by_sample(mset, scale)
@@ -193,9 +197,9 @@ cowplot::plot_grid(
 )
 ```
 
-The figure above shows that using the `scale` function, each sample but not each feature is scaled to 0. Vice versa.
+The figure above shows that by using the `scale` function. Each sample is scaled to 0 using `transform_by_sample`. Each feature is scaled to 0 using `transform_by_feature`.
 
-The `summarize_features` function will aggregate the conc_table according to a given feature variable. The example below will add all features with the sample lipid class together. The second argument must appear in the column names of the feature_data slot.
+The `summarize_features` function will aggregate the `conc_table` according to a given feature variable. The example below will add all features with the sample lipid class together. The second argument must appear in the column names of the `feature_data` slot.
 
 ```{r}
 unique(mset$feature_data$class)
@@ -224,7 +228,7 @@ head(lm)
 
 # Visualization
 
-Metabase provides some quick visualization functions. Metabase's plot functions were mostly build on top of the `ggmetaplots` package. Install from github before using it.
+Metabase provides some quick visualization functions. Metabase's plot functions are mostly built on top of the `ggmetaplots` package. Installation from github is required.
 
 ```{r eval=FALSE}
 devtools::install_github("zhuchcn/ggmetaplots")
