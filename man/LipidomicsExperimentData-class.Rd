@@ -3,8 +3,9 @@
 \docType{class}
 \name{LipidomicsExperimentData-class}
 \alias{LipidomicsExperimentData-class}
-\title{S4 class to store experiment data for metabolomics experiment.}
+\title{Deprecated S4 class to store experiment data for metabolomics experiment.}
 \description{
+This class is deprecated in the future
 This is a S4 class inherits from the
 \code{\link{MetabolomicsExperimentData-class}}. It can be thought as a
 special subclass of the MetabolomicsExperimentData, only for lipidomics

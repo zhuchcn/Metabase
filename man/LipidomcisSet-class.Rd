@@ -31,8 +31,7 @@ should match the column names of the conc_table.}
 feature infromation during the experiment. The row names should be feature
 IDs and should match the row names of the conc_table.}
 
-\item{\code{experiment_data}}{A \code{\link{LipidomicsExperimentData-class}}
-object contains additional experiment information.}
+\item{\code{experiment_data}}{A list contains all untabular experimental data.}
 }}
 
 \author{

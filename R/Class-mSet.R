@@ -142,8 +142,9 @@ setValidity(
 
 ################################################################################
 #' @name ExperimentData-class
-#' @title A virtual S4 class for experiment data
+#' @title Deprecated A virtual S4 class for experiment data
 #' @description
+#' This class is deprecated in the future
 #' Quantitative experiments such as metabolomics and proteomics often have
 #' additional information beside experiment result. This S4 class is to store
 #' those information such as analysis institute, instrument, resuspension
@@ -169,7 +170,7 @@ setClassUnion("listOrNULL",           c("NULL", "list"))
 setClassUnion("conc_tableOrNULL",     c("NULL", "conc_table"))
 setClassUnion("sample_tableOrNULL",   c("NULL", "sample_table"))
 setClassUnion("feature_dataOrNULL",   c("NULL", "feature_data"))
-setClassUnion("ExperimentDataOrNULL", c("NULL", "ExperimentData"))
+setClassUnion("ExperimentDataOrListOrNULL", c("NULL", "list", "ExperimentData"))
 ################################################################################
 #' @name mSet-class
 #' @title A virtual S4 class to store an quantitative experiment data.
@@ -202,10 +203,7 @@ setClassUnion("ExperimentDataOrNULL", c("NULL", "ExperimentData"))
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @slot experiment_data This must be an object that inherits from the virtual
-#' \code{\link{ExperimentData-class}}. This slot stores the experiment
-#' information such as lab and instrument. It also varies among different
-#' experiment types.
+#' @slot experiment_data A list contains additional untabular experimental data
 #'
 #' @exportClass mSet
 #' @author Chenghao Zhu
@@ -215,7 +213,7 @@ setClass(
         conc_table      = "conc_tableOrNULL",
         sample_table    = "sample_tableOrNULL",
         feature_data    = "feature_dataOrNULL",
-        experiment_data = "ExperimentDataOrNULL",
+        experiment_data = "ExperimentDataOrListOrNULL",
         "VIRTUAL"
     ),
     prototype = prototype(
@@ -258,7 +256,8 @@ setValidity(
 splat_object = function(object){
     slot_names = slotNames(object)
     slots_list = lapply(slot_names, function(slot){
-        eval(parse(text = paste0("object@", slot)))
+        slot(object, slot)
+        #eval(parse(text = paste0("object@", slot)))
     })
     names(slots_list) = slot_names
     return(slots_list)

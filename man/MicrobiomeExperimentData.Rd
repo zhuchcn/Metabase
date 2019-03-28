@@ -2,7 +2,7 @@
 % Please edit documentation in R/Class-MicrobiomeSet.R
 \name{MicrobiomeExperimentData}
 \alias{MicrobiomeExperimentData}
-\title{Construct a MicrobiomeExperimentData object}
+\title{Deprecated Construct a MicrobiomeExperimentData object}
 \usage{
 MicrobiomeExperimentData(experiemnt_type = NULL,
   processing_software = NULL)

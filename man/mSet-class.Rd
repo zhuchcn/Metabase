@@ -36,10 +36,7 @@ should match the column names of the conc_table.}
 feature infromation during the experiment. The row names should be feature
 IDs and should match the row names of the conc_table.}
 
-\item{\code{experiment_data}}{This must be an object that inherits from the virtual
-\code{\link{ExperimentData-class}}. This slot stores the experiment
-information such as lab and instrument. It also varies among different
-experiment types.}
+\item{\code{experiment_data}}{A list contains additional untabular experimental data}
 }}
 
 \author{

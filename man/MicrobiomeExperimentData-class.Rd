@@ -3,7 +3,7 @@
 \docType{class}
 \name{MicrobiomeExperimentData-class}
 \alias{MicrobiomeExperimentData-class}
-\title{S4 class to store the experiment data of a micrbiome experiment}
+\title{Deprecated S4 class to store the experiment data of a micrbiome experiment}
 \description{
 This class defines the experiement_slot of the
 \code{\link{MicrobiomeSet-class}}. This class inherits from the

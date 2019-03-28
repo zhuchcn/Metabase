@@ -2,7 +2,7 @@
 % Please edit documentation in R/Class-ProteomicsSet.R
 \name{ProteomicsExperimentData}
 \alias{ProteomicsExperimentData}
-\title{Construction method for the S4 class ProteomicsExperimentData}
+\title{Deprecated Construction method for the S4 class ProteomicsExperimentData}
 \usage{
 ProteomicsExperimentData(institute = NULL)
 }

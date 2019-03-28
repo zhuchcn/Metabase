@@ -1,5 +1,5 @@
 ################################################################################
-#' @title S4 class to store experiment data for proteomics experiment
+#' @title Deprecated S4 class to store experiment data for proteomics experiment
 #' This is a S4 class inherits from the virtual class
 #' \code{\link{ExperimentData-class}}. The purpose of this class is to store
 #' all the additional experiment information from a proteomics experiment.
@@ -19,11 +19,11 @@ setClass(
 )
 
 ################################################################################
-setClassUnion("ProteomicsExperimentDataOrNULL",
-              c("ProteomicsExperimentData", "NULL"))
+# setClassUnion("ProteomicsExperimentDataOrNULL",
+#               c("ProteomicsExperimentData", "NULL"))
 
 ################################################################################
-#' @title Construction method for the S4 class ProteomicsExperimentData
+#' @title Deprecated Construction method for the S4 class ProteomicsExperimentData
 #' @description  The construction method to build a
 #' \code{\link{ProteomicsExperimentData-class}} object.
 #' @param institute Character indicating the institute or lab where the experiment was conducted.
@@ -59,19 +59,11 @@ ProteomicsExperimentData = function(
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @slot experiment_data A \code{\link{ProteomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @slot experiment_data A list contains additional experiment information.
 #'
 #' @exportClass ProteomicsSet
 #' @author Chenghao Zhu
-setClass(
-    Class = "ProteomicsSet",
-    contains = "mSet",
-    validity = function(object){
-        if(!isClass(object@experiment_data, Class = "ProteomicsExperimentDataOrNULL"))
-            return("The experiment data must be an object of the ProteomicsExperimentData class")
-    }
-)
+setClass(Class = "ProteomicsSet", contains = "mSet")
 ################################################################################
 #' @name ProteomicsSet
 #' @title Construct a ProteomicsSet object
@@ -91,8 +83,7 @@ setClass(
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @param experiment_data A \code{\link{ProteomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @param experiment_data A list contains additional experiment information.
 #'
 #' @export
 #' @author Chenghao Zhu

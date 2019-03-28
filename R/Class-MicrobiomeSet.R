@@ -1,5 +1,5 @@
 ################################################################################
-#' @title S4 class to store the experiment data of a micrbiome experiment
+#' @title Deprecated S4 class to store the experiment data of a micrbiome experiment
 #' @description This class defines the experiement_slot of the
 #' \code{\link{MicrobiomeSet-class}}. This class inherits from the
 #' \code{\link{ExperiemntData-class}}
@@ -25,7 +25,7 @@ setClass(
     )
 )
 ################################################################################
-#' @title Construct a MicrobiomeExperimentData object
+#' @title Deprecated Construct a MicrobiomeExperimentData object
 #' @description The main constructor for the
 #' \code{\link{MicrobiomeExperimentData-class}}
 #' @param experiment_type character value indicates the type of experiemnt
@@ -46,9 +46,6 @@ MicrobiomeExperimentData = function(
         processing_software = processing_software)
 }
 ################################################################################
-setClassUnion("MicrobiomeExperimentDataOrNull",
-              c("MicrobiomeExperimentData", "NULL"))
-################################################################################
 #' @title S4 class to store Micorbiome Data
 #' @description This class inherits from the \code{\link{mSet-class}} and stores
 #' the microbiome data (16S seq etc.)
@@ -68,8 +65,7 @@ setClassUnion("MicrobiomeExperimentDataOrNull",
 #' be all character and only stores the taxonomy inforamtion
 #' (kingdom to species).
 #'
-#' @slot experiment_data A \code{\link{MetabolomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @slot experiment_data A list contains additional experiment information.
 #'
 #' @seealso \code{\link{MicrobiomeSet}} \code{\link{mSet-class}}
 #' \code{\link{MetabolomicsExperimentData-class}}
@@ -79,9 +75,6 @@ setClassUnion("MicrobiomeExperimentDataOrNull",
 setClass(
     "MicrobiomeSet", contains = "mSet",
     validity = function(object){
-        if(!isClass(object@experiment_data,
-                    Class = "MicrobiomeExperimentDataOrNull"))
-            return("[ Metabase ] [ MicrobiomeSet construction failure ] The experiment_data slot must be a MicrobiomeExperimentDat object")
         if(!is.null(object@feature_data)){
             if(any(sapply(object@feature_data, function(x) !is.character(x))))
                 return("[ Metabase ] [ MicrobiomeSet construction failure ] The feature_data slot must be all character")
@@ -107,8 +100,7 @@ setClass(
 #' be all character and only stores the taxonomy inforamtion
 #' (kingdom to species).
 #'
-#' @param experiment_data A \code{\link{MetabolomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @param experiment_data A list contains additional experiment information.
 #'
 #' @seealso \code{\link{MicrobiomeSet-class}} \code{\link{mSet-class}}
 #' \code{\link{MetabolomicsExperimentData-class}}

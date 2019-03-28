@@ -2,7 +2,7 @@
 % Please edit documentation in R/Class-MetabolomicsSet.R
 \name{MetabolomicsExperimentData}
 \alias{MetabolomicsExperimentData}
-\title{Construction method for MetabolomicsExperimentData-class}
+\title{Deprecated Construction method for MetabolomicsExperimentData-class}
 \usage{
 MetabolomicsExperimentData(institute = NULL, experiment_type = NULL,
   instrument = NULL, resuspension_volumn_ul = NULL,
@@ -34,6 +34,7 @@ spiked in to samples.}
 processing was done.}
 }
 \description{
+This function is deprecated in the future
 The construction method to build a
 \code{\link{MetabolomicsExperimentData-class}} object.
 }

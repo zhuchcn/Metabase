@@ -23,8 +23,7 @@ IDs and should match the row names of the conc_table. The feature_data must
 be all character and only stores the taxonomy inforamtion
 (kingdom to species).}
 
-\item{experiment_data}{A \code{\link{MetabolomicsExperimentData-class}}
-object contains additional experiment information.}
+\item{experiment_data}{A list contains additional experiment information.}
 }
 \description{
 This is the main construction method to create a

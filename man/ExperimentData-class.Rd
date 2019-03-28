@@ -3,8 +3,9 @@
 \docType{class}
 \name{ExperimentData-class}
 \alias{ExperimentData-class}
-\title{A virtual S4 class for experiment data}
+\title{Deprecated A virtual S4 class for experiment data}
 \description{
+This class is deprecated in the future
 Quantitative experiments such as metabolomics and proteomics often have
 additional information beside experiment result. This S4 class is to store
 those information such as analysis institute, instrument, resuspension

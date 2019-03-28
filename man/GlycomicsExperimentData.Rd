@@ -2,7 +2,7 @@
 % Please edit documentation in R/Class-GlycomicsSet.R
 \name{GlycomicsExperimentData}
 \alias{GlycomicsExperimentData}
-\title{Construction method for the S4 class GlycomicsExperimentData}
+\title{Deprecated Construction method for the S4 class GlycomicsExperimentData}
 \usage{
 GlycomicsExperimentData(institute = NULL)
 }
@@ -10,6 +10,7 @@ GlycomicsExperimentData(institute = NULL)
 \item{institute}{Character indicating the institute or lab where the experiment was conducted.}
 }
 \description{
+This function will be deprecated in the future
 The construction method to build a
 \code{\link{GlycomicsExperimentData-class}} object.
 }

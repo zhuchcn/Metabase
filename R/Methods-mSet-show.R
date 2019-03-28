@@ -95,6 +95,20 @@ setMethod(
                 " more feature variables\n")
     }
 )
+
+################################################################################
+#' @export
+setMethod(
+    "show", signature = "ExperimentData",
+    definition = function(object){
+        for(i in seq_along(object@.Data)){
+            cat(names(object)[i])
+            cat(":\n")
+            show(object@.Data[[i]])
+            cat("\n")
+        }
+    }
+)
 ################################################################################
 #' @export
 setMethod(
@@ -150,6 +164,10 @@ setMethod(
 setMethod(
     "show", signature = "mSet",
     definition = function(object){
+
+        if(inherits(object@experiment_data, "ExperimentData")) {
+            warning("The experiment_data slot is a " %+% class(object) %+% "-class which is deprecated. Please convert it to a list.")
+        }
 
         # conc_table
         if(!is.null(object@conc_table)){

@@ -3,8 +3,9 @@
 ################################################################################
 
 #' @name MetabolomicsExperimentData-class
-#' @title S4 class to store experiment data for metabolomics experiment.
+#' @title Deprecated S4 class to store experiment data for metabolomics experiment.
 #' @description
+#' This class is deprecated in the future.
 #' This is a S4 class inherits from the virtual class
 #' \code{\link{ExperimentData-class}}. The purpose of this class is to store
 #' all the additional experiment information from a metabolomics experiment.
@@ -58,19 +59,21 @@ setClass(
     )
 )
 ################################################################################
-setValidity(
-    Class = "MetabolomicsExperimentData",
-    function(object){
-        if(!is.null(object@internal_standards)){
-            if(is.null(object@internal_standards$InChIKey))
-                stop("The 'internal_standards' slot must have a 'InChIKey' slot")
-        }
-    }
-)
+# The validation of experiment_data seems unnecessary
+# setValidity(
+#     Class = "MetabolomicsExperimentData",
+#     function(object){
+#         if(!is.null(object@internal_standards)){
+#             if(is.null(object@internal_standards$InChIKey))
+#                 stop("The 'internal_standards' slot must have a 'InChIKey' slot")
+#         }
+#     }
+# )
 ################################################################################
 #' @name MetabolomicsExperimentData
-#' @title Construction method for MetabolomicsExperimentData-class
-#' @description The construction method to build a
+#' @title Deprecated Construction method for MetabolomicsExperimentData-class
+#' @description This function is deprecated in the future
+#' The construction method to build a
 #' \code{\link{MetabolomicsExperimentData-class}} object.
 #'
 #' @param institute character indicates the institute where the experiment was
@@ -148,23 +151,23 @@ MetabolomicsExperimentData = function(
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @slot experiment_data A \code{\link{MetabolomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @slot experiment_data A list contains additional experiment information.
 #'
 #' @exportClass MetabolomicsSet
 #' @author Chenghao Zhu
 setClass(Class = "MetabolomicsSet", contains = "mSet")
 ################################################################################
-setClassUnion("MetabolomicsExperimentDataOrNULL",
-              c("MetabolomicsExperimentData","NULL"))
+setClassUnion("MetabolomicsExperimentDataOrListOrNULL",
+              c("MetabolomicsExperimentData", "list","NULL"))
 ################################################################################
-setValidity(
-    Class = "MetabolomicsSet",
-    method = function(object){
-        if(!isClass(object@experiment_data, Class = "MetabolomicsExperimentDataOrNULL"))
-            return("The experiment data must be an object of the MetabolomicsExperimentData class")
-    }
-)
+# The validation just seems unnessasry now
+# setValidity(
+#     Class = "MetabolomicsSet",
+#     method = function(object){
+#         if(!isClass(object@experiment_data, Class = "MetabolomicsExperimentDataOrNULL"))
+#             return("The experiment data must be an object of the MetabolomicsExperimentData class")
+#     }
+# )
 ################################################################################
 #' @name MetabolomicsSet
 #' @title Construct a MetabolomicsSet object
@@ -184,8 +187,7 @@ setValidity(
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @param experiment_data A \code{\link{MetabolomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @param experiment_data A list contains additional experiment information.
 #'
 #' @export
 #' @author Chenghao Zhu
@@ -203,16 +205,13 @@ MetabolomicsSet = function(
     return(object)
 }
 
-        ##%######################################################%##
-        #                                                          #
-        ####                   LipidomicsSet                    ####
-        #                                                          #
-        ##%######################################################%##
-
+################################################################################
+##########                       LipidomicsSet                        ##########
 ################################################################################
 #' @name LipidomicsExperimentData-class
-#' @title S4 class to store experiment data for metabolomics experiment.
+#' @title Deprecated S4 class to store experiment data for metabolomics experiment.
 #' @description
+#' This class is deprecated in the future
 #' This is a S4 class inherits from the
 #' \code{\link{MetabolomicsExperimentData-class}}. It can be thought as a
 #' special subclass of the MetabolomicsExperimentData, only for lipidomics
@@ -252,21 +251,7 @@ MetabolomicsSet = function(
 #' @author Chenghao Zhu
 setClass(
     Class = "LipidomicsExperimentData",
-    contains = "MetabolomicsExperimentData",
-    validity = function(object){
-        if(!is.null(object@internal_standards)){
-            if(is.null(object@internal_standards$InChIKey))
-                return("LipidomicsExperimentData@internal_standard: must have InChIKey")
-            if(is.null(object@internal_standards$class))
-                return("LipidomicsExperimentData@internal_standard: must have lipid class")
-            if(is.null(object@internal_standards$spike_amt))
-                return("LipidomicsExperimentData@internal_standard: must have spike_amt")
-            if(is.null(object@internal_standards$spike_unit))
-                return("LipidomicsExperimentData@internal_standard: must have spike_unit")
-            if(any(object@internal_standards$spike_unit != "ug") )
-                return("LipidomicsExperimentData@internal_standard: unit must be in 'ug'")
-        }
-    }
+    contains = "MetabolomicsExperimentData"
 )
 ################################################################################
 #' @name LipidomicsExperimentData
@@ -326,8 +311,8 @@ LipidomicsExperimentData = function(
     )
 }
 ################################################################################
-setClassUnion("LipidomicsExperimentDataOrNULL",
-              c("LipidomicsExperimentData", "NULL"))
+setClassUnion("LipidomicsExperimentDataOrListOrNULL",
+              c("LipidomicsExperimentData", "list", "NULL"))
 ################################################################################
 #' @name LipidomcisSet-class
 #' @title S4 class to store lipidomics dataset
@@ -356,8 +341,7 @@ setClassUnion("LipidomicsExperimentDataOrNULL",
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @slot experiment_data A \code{\link{LipidomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @slot experiment_data A list contains all untabular experimental data.
 #'
 #' @exportClass LipidomicsSet
 #' @author Chenghao Zhu
@@ -365,8 +349,21 @@ setClass(
     Class = "LipidomicsSet",
     contains = "MetabolomicsSet",
     validity = function(object){
-        if(!isClass(object@experiment_data, Class = "LipidomicsExperimentDataOrNULL"))
-            return("LipidomicsSet@experiment_data: must be a LipidomicsExperimentData")
+        expData = object@experiment_data
+        if(is.list(expData)){
+            if(!is.null(expData$internal_standards)){
+                if(is.null(expData$internal_standards$InChIKey))
+                    return("LipidomicsExperimentData@internal_standard: must have InChIKey")
+                if(is.null(expData$internal_standards$class))
+                    return("LipidomicsExperimentData@internal_standard: must have lipid class")
+                if(is.null(expData$internal_standards$spike_amt))
+                    return("LipidomicsExperimentData@internal_standard: must have spike_amt")
+                if(is.null(expData$internal_standards$spike_unit))
+                    return("LipidomicsExperimentData@internal_standard: must have spike_unit")
+                if(any(expData$internal_standards$spike_unit != "ug") )
+                    return("LipidomicsExperimentData@internal_standard: unit must be in 'ug'")
+            }
+        }
     }
 )
 ################################################################################
@@ -388,8 +385,7 @@ setClass(
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @param experiment_data A \code{\link{LipidomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @param experiment_data A list contains additional experiment information.
 #'
 #' @export
 #' @author Chenghao Zhu

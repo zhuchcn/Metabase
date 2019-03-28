@@ -267,30 +267,36 @@ assign_lipid_class = function(x){
 calibrate_lipidomics_wcmc = function(object, class, cid, ESI){
     if(!isClass(object, Class = "LipidomicsSet"))
         stop("This function only supports LipidomicsSet data.", call. = FALSE)
-    if(is.null(object@experiment_data@internal_standards))
-        stop("The experiment_data must contain a `internal_standards` slot",
-             call. = FALSE)
-    if(is.null(object@experiment_data@sample_volumn_ul))
-        stop("The experiment_data slot must contain `sample_volumn_ul`",
-             call. = FALSE)
+
+    if(is.null(object@experiment_data))
+        stop("[ Metabase ] The experiment_data slot must not be null")
+
+    if(is.null(object@experiment_data$internal_standards))
+        stop("[ Metabase ] The experiment_data slot must contain a list item named internal_standards")
+
+    if(is.null(object@experiment_data$sample_volumn_ul))
+        stop("[ Metabase ] The experiment_data slot must contain `sample_volumn_ul`")
+
     if(missing(class))
-        stop("Must have 'class' that specifies the feature variable of lipid class",
-             call. = FALSE)
+        stop("[ Metabase ] Must have 'class' that specifies the feature variable of lipid class")
+
     if(!class %in% colnames(object@feature_data))
-        stop("The class variable '" %+% class %+% "' not found in the feature_data",
-             call. = FALSE)
+        stop("[ Metabase ] The class variable '" %+% class %+% "' not found in the feature_data")
+
     if(missing(cid))
-        stop("Must have 'cid' that specifies the compound ID for each feature such as InChIKey")
+        stop("[ Metabase ] Must have 'cid' that specifies the compound ID for each feature such as InChIKey")
+
     if(!cid %in% colnames(object@feature_data))
-        stop("The cid variable '" %+% cid %+% "' not found in the feature_data",
-             call. = FALSE)
+        stop("[ Metabase ] The cid variable '" %+% cid %+% "' not found in the feature_data")
+
     if(missing(ESI))
-        stop("Must have 'ESI' that specifies the feature variable of ESI mode")
+        stop("[ Metabase ] Must have 'ESI' that specifies the feature variable of ESI mode")
+
     if(!ESI %in% colnames(object@feature_data))
-        stop("The ESI variable '" %+% ESI %+% "' not found in the feature_data",
+        stop("[ Metabase ] The ESI variable '" %+% ESI %+% "' not found in the feature_data",
              call. = FALSE)
 
-    is_df = object@experiment_data@internal_standards
+    is_df = object@experiment_data$internal_standards
 
     object_clean = subset_features(
         object,
@@ -300,7 +306,7 @@ calibrate_lipidomics_wcmc = function(object, class, cid, ESI){
         object,
         object@feature_data[,cid] %in% is_df[,cid]
     )
-    sample_vol = object@experiment_data@sample_volumn_ul
+    sample_vol = object@experiment_data$sample_volumn_ul
     conc_table = sapply(1:nfeatures(object_clean), function(i){
         int = object_clean@conc_table[i,]
         lipid.class = object_clean@feature_data[i, class]
@@ -316,7 +322,7 @@ calibrate_lipidomics_wcmc = function(object, class, cid, ESI){
     }) %>% t
     rownames(conc_table) = featureNames(object_clean)
     object_clean@conc_table = conc_table(conc_table)
-    object_clean@experiment_data@conc_table_unit = "ug/ml"
+    object_clean@experiment_data$conc_table_unit = "ug/ml"
     return(object_clean)
 }
 

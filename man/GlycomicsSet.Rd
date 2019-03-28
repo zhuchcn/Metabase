@@ -21,8 +21,7 @@ should match the column names of the conc_table.}
 feature infromation during the experiment. The row names should be feature
 IDs and should match the row names of the conc_table.}
 
-\item{experiment_data}{A \code{\link{GlycomicsExperimentData-class}}
-object contains additional experiment information.}
+\item{experiment_data}{A list contains additional experiment information.}
 }
 \description{
 This is the method to construct a

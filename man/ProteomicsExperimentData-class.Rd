@@ -3,14 +3,14 @@
 \docType{class}
 \name{ProteomicsExperimentData-class}
 \alias{ProteomicsExperimentData-class}
-\title{S4 class to store experiment data for proteomics experiment
+\title{Deprecated S4 class to store experiment data for proteomics experiment
 This is a S4 class inherits from the virtual class
 \code{\link{ExperimentData-class}}. The purpose of this class is to store
 all the additional experiment information from a proteomics experiment.
 This class has a list like structure. It contains five slots and each is
 either a character or numeric value.}
 \description{
-S4 class to store experiment data for proteomics experiment
+Deprecated S4 class to store experiment data for proteomics experiment
 This is a S4 class inherits from the virtual class
 \code{\link{ExperimentData-class}}. The purpose of this class is to store
 all the additional experiment information from a proteomics experiment.

@@ -1,5 +1,5 @@
 ################################################################################
-#' @title S4 class to store experiment data for glycomics experiment
+#' @title Deprecated S4 class to store experiment data for glycomics experiment
 #' This is a S4 class inherits from the virtual class
 #' \code{\link{ExperimentData-class}}. The purpose of this class is to store
 #' all the additional experiment information from a glycomics experiment.
@@ -19,12 +19,14 @@ setClass(
 )
 
 ################################################################################
-setClassUnion("GlycomicsExperimentDataOrNULL",
-              c("GlycomicsExperimentData", "NULL"))
+# setClassUnion("GlycomicsExperimentDataOrNULL",
+#               c("GlycomicsExperimentData", "NULL"))
 
 ################################################################################
-#' @title Construction method for the S4 class GlycomicsExperimentData
-#' @description  The construction method to build a
+#' @title Deprecated Construction method for the S4 class GlycomicsExperimentData
+#' @description
+#' This function will be deprecated in the future
+#' The construction method to build a
 #' \code{\link{GlycomicsExperimentData-class}} object.
 #' @param institute Character indicating the institute or lab where the experiment was conducted.
 #' @export
@@ -59,19 +61,11 @@ GlycomicsExperimentData = function(
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @slot experiment_data A \code{\link{GlycomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @slot experiment_data A list contains additional experiment information.
 #'
 #' @exportClass GlycomicsSet
 #' @author Chenghao Zhu
-setClass(
-    Class = "GlycomicsSet",
-    contains = "mSet",
-    validity = function(object){
-        if(!isClass(object@experiment_data, Class = "GlycomicsExperimentDataOrNULL"))
-            return("The experiment data must be an object of the GlycomicsExperimentData class")
-    }
-)
+setClass( Class = "GlycomicsSet", contains = "mSet" )
 ################################################################################
 #' @name GlycomicsSet
 #' @title Construct a GlycomicsSet object
@@ -91,8 +85,7 @@ setClass(
 #' feature infromation during the experiment. The row names should be feature
 #' IDs and should match the row names of the conc_table.
 #'
-#' @param experiment_data A \code{\link{GlycomicsExperimentData-class}}
-#' object contains additional experiment information.
+#' @param experiment_data A list contains additional experiment information.
 #'
 #' @export
 #' @author Chenghao Zhu
