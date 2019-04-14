@@ -102,13 +102,13 @@ import_wcmc_excel = function(file,
     return(object)
 }
 ################################################################################
-#' @title Export mSet object into a Excle sheet
+#' @title Export mSet object into a excel sheet
 #'
-#' @description This function allows users to export a mSet object to an Excle
+#' @description This function allows users to export a mSet object to an excel
 #' spreadsheet. The output is a spreadsheet with feature data on the left,
 #' sample table on the top and transposed, and the conc table in the middle.
 #'
-#' This function uses the xlsx pacakge to write the data into Excle format.
+#' This function uses the xlsx pacakge to write the data into excel format.
 #' Please make sure the package is pre-installed before using it.
 #'
 #' @param object A \code{\link{mSet-class}} or derived object.
@@ -118,10 +118,10 @@ import_wcmc_excel = function(file,
 #' @param conc_sheet_name,samp_sheet_name,feat_sheet_name Character values, with
 #' each indicating the sheet name of each data slot.
 #'
-#' @return A Excle spreadsheet
+#' @return A excel spreadsheet
 #' @export
 #' @author Chenghao Zhu
-export_excle = function(
+export_excel = function(
     object, file, single_sheet = TRUE, conc_sheet_name = "intensity matrix",
     samp_sheet_name = "sample info", feat_sheet_name = "features info"
 ){
@@ -132,15 +132,15 @@ export_excle = function(
         stop("Only mSet or derived classes are supported", call. = FALSE)
 
     if(single_sheet){
-        export_excle_single_sheet(object, file)
+        export_excel_single_sheet(object, file)
     } else {
-        export_excle_separate_sheets(
+        export_excel_separate_sheets(
             object, file, conc_sheet_name, samp_sheet_name, feat_sheet_name
         )
     }
 }
 
-export_excle_single_sheet = function(object, file){
+export_excel_single_sheet = function(object, file){
     emt_mat = matrix("", ncol = ncol(object@feature_data),
                      nrow = ncol(object@sample_table)+1)
     featVar = c("feature_id", colnames(object@feature_data))
@@ -159,7 +159,7 @@ export_excle_single_sheet = function(object, file){
                      showNA = FALSE, append = TRUE)
 }
 
-export_excle_separate_sheets = function(
+export_excel_separate_sheets = function(
     object, file, conc_sheet_name, samp_sheet_name, feat_sheet_name
 ){
     conc = object@conc_table %>% as("matrix") %>% as.data.frame
@@ -443,5 +443,30 @@ export_txt = function(
     write.table(
         conc, file = conc_path, quote = quote, sep = sep,
         row.names = FALSE, col.name = TRUE
+    )
+}
+
+################################################################################
+#' @title Convert to an mSet object to ExpressionSet
+#' @description Convert any mSet class object to the Biobase's ExpressionSet
+#' class.
+#' @seealso \code{\link[Biobase]{ExpressionSet}}
+#' @export
+as_ExpressionSet = function(object){
+    if(!inherits(object, "mSet")){
+        stop("[ Metabase ] obejct must inherits from mSet")
+    }
+    if(!requireNamespace("Biobase")){
+        stop("[ Metabase ] Biobase package is required for this function")
+    }
+
+    edata = as(object@conc_table, "matrix")
+    pdata = as(object@sample_table, "data.frame")
+    fdata = as(object@feature_data, "data.frame")
+
+    Biobase::ExpressionSet(
+        assayData = object@conc_table,
+        phenoData = Biobase::AnnotatedDataFrame(pdata),
+        featureData = Biobase::AnnotatedDataFrame((fdata))
     )
 }

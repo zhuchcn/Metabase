@@ -24,7 +24,7 @@
 plot_boxplot = function(object, x, feature, rows = NULL, cols = NULL, line = NULL, color = NULL, ...){
 
     if(!requireNamespace("ggmetaplots")){
-        stop("[ Metabase ] Can't find the ggmetaplot package. Please install it using:\n\n    devtools::install_github('zhuchcn/ggmetaplot')",
+        stop("[ Metabase ] Please install the zheatmap:\n\n    devtools::install_github('zhuchcn/zheatmap')",
              call. = FALSE)
     }
 
@@ -58,7 +58,8 @@ plot_boxplot = function(object, x, feature, rows = NULL, cols = NULL, line = NUL
     args = args[names(args)!="feature"]
     args$y = "Concentration"
 
-    do.call(ggmetaplots::ggboxplot, args)
+    do.call(ggmetaplots::ggboxplot, args) +
+        labs(title = feature)
 
 }
 ################################################################################
@@ -311,3 +312,106 @@ plot_median_hist = function(object, bins = 30, fill = "steelblue", density = TRU
     return(p)
 }
 
+
+################################################################################
+#' @title Create a PCA plot
+#' @description Create a PCA plot of an mSet object
+#' @param object an mSet object
+#' @param color character variable indicating which sample variable will be used
+#' to give colors. If length is larger than 1, the two variables will be used
+#' by calling \code{\link{interaction}}
+#' @param ellipse boolean whether to draw ellipses.
+#'
+#' @seealso \code{\link[ggmetaplots]{ggscatterplot}}
+#'
+#' @examples
+#'
+#' plot_pca(lipid)
+#' plot_pca(lipid, color = "Treatment")
+#' plot_pca(lipid, color = c("Treatment", "Timepoint"), ellipse = TRUE)
+#'
+#' @export
+plot_pca = function(object, color, ellipse = FALSE, ...){
+    if(!inherits(object, "mSet")) {
+        stop("[ Metabase ] object must inherits from mSet")
+    }
+    if(!requireNamespace("ggmetaplots")) {
+
+    }
+
+    pca = apply(object@conc_table, 1, scale) %>% prcomp
+    sdev = pca$sdev ^ 2 / sum(pca$sdev ^ 2)
+    xlab = "PC1 [ " %+% round(sdev[1] * 100, 2) %+% "% explained ]"
+    ylab = "PC2 [ " %+% round(sdev[2] * 100, 2) %+% "% explained ]"
+
+    data.frame(
+        x = pca$x[, "PC1"],
+        y = pca$x[, "PC2"]
+    ) %>% cbind(object@sample_table) %>%
+        ggmetaplots::ggscatterplot(
+            "x", "y", color = color, ellipse = ellipse, trendline = FALSE, ...
+        ) +
+        labs(x = xlab, y = ylab)
+}
+
+################################################################################
+#' @title Create a heatmap of an mSet object
+#' @description Create a heatmap using an mSet object. This function requires the
+#' zheatmap package.
+#' @param object an mSet object
+#' @param colSideBar string, the sample
+#' @param scale string, must be one of sample, feature, or none.
+#' @param scale.fun, string, must be one either scale or absolute_scale
+#' @seealso \code{\link[zheatmap]{zheatmap}}
+#'
+#' @examples
+#'
+#' mset = subset_features(lipid, 1:25)
+#' plot_heatmap(lipid)
+#' plot_heatmap(lipid, colSideBar = "Treatment")
+#' plot_heatmap(lipid, rowsSideBar = "class")
+#'
+#' @export
+plot_heatmap = function(object,
+                        colSideBar = NULL,
+                        rowSideBar = NULL,
+                        scale = "sample",
+                        scale.fun = "scale",
+                        ...){
+    if(!inherits(object, "mSet")) {
+        stop("[ Metabase ] object must inherits from mSet")
+    }
+    if(!requireNamespace("zheatmap")){
+        stop("[ Metabase ] Please install the zheatmap:\n\n    devtools::install_github('zhuchcn/zheatmap')",
+             call. = FALSE)
+    }
+
+    if(!is.null(colSideBar)) {
+        if(length(colSideBar) == 1){
+            colSideBar = object@sample_table[,colSideBar]
+        } else {
+            colSideBar = do.call(interaction, lapply(colSideBar, function(x) object@sample_table[[x]]))
+        }
+    }
+    if(!is.null(rowSideBar)) {
+        rowSideBar = object@feature_data[, rowSideBar]
+    }
+
+    if(!(scale %in% c("sample", "feature", "none"))){
+        stop("scale must be one of \"sample\", \"feature\" and \"none\" ")
+    }
+    scale = switch(
+        scale,
+        "sample" = "row",
+        "feature" = "column",
+        "none" = "none"
+    )
+
+    if(!(scale.fun %in% c("scale", "absolute_scale"))){
+        stop("scale.fun must be either \"scale\" or \"absolute_scale\" ")
+    }
+
+    zheatmap::zheatmap(object@conc_table, colSideBar = colSideBar,
+                       rowSideBar = rowSideBar, scale = scale,
+                       scale.fun = scale.fun, ...)
+}
