@@ -29,4 +29,5 @@ The virtual super class *mSet* is the base of this package. It has 4 slots, a *c
 
 ## To do:
 
-- [ ] The ExperimentData-class is currently too strict. The structure should be more flexible to handle different study type.
+- [x] The ExperimentData-class is currently too strict. The structure should be more flexible to handle different study type.
+- [ ] Make it compatible with xcms

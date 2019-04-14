@@ -35,5 +35,6 @@ Vignettes
 To do:
 ------
 
--   \[ \] The ExperimentData-class is currently too strict. The
+-   \[x\] The ExperimentData-class is currently too strict. The
     structure should be more flexible to handle different study type.
+-   \[ \] Make it compatible with xcms

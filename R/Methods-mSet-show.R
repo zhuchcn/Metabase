@@ -24,7 +24,7 @@ setMethod(
             row.show %+% " samples and " %+%
             col.show %+% " features...\n\n")
 
-        show(object[1:row.show, 1:col.show])
+        methods::show(object[1:row.show, 1:col.show])
 
         cat("\n")
         cat("... " %+% str_pad(n.col-col.show, 3, "left", " ") %+%
@@ -55,7 +55,7 @@ setMethod(
             col.show %+% " samples and " %+%
             row.show %+% " sample variables...\n\n")
 
-        show(object[1:row.show, 1:col.show])
+        methods::show(object[1:row.show, 1:col.show])
 
         cat("\n")
         cat("... " %+% str_pad(n.row-row.show, 3, "left", " ") %+%
@@ -86,7 +86,7 @@ setMethod(
             row.show %+% " samples and " %+%
             col.show %+% " features...\n\n")
 
-        show(object[1:row.show, 1:col.show])
+        methods::show(object[1:row.show, 1:col.show])
 
         cat("\n")
         cat("... " %+% str_pad(n.col-col.show, 3, "left", " ") %+%
@@ -104,7 +104,7 @@ setMethod(
         for(i in seq_along(object@.Data)){
             cat(names(object)[i])
             cat(":\n")
-            show(object@.Data[[i]])
+            methods::show(object@.Data[[i]])
             cat("\n")
         }
     }
