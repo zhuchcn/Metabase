@@ -6,31 +6,31 @@
 \alias{$}
 \alias{$<-,ExperimentData-method}
 \alias{$<-}
-\alias{[[,ExperimentData-method}
+\alias{[[,ExperimentData,ANY,ANY-method}
 \alias{[[}
-\alias{[[<-,ExperimentData-method}
+\alias{[[<-,ExperimentData,ANY,ANY-method}
 \alias{[[<-}
 \alias{$,mSet-method}
 \alias{$<-,mSet-method}
-\alias{[[,mSet-method}
-\alias{[[<-,mSet-method}
+\alias{[[,mSet,ANY,ANY-method}
+\alias{[[<-,mSet,ANY,ANY-method}
 \title{Extract or Replace A Slot of An mSet or ExperimentData object}
 \usage{
 \S4method{$}{ExperimentData}(x, name)
 
 \S4method{$}{ExperimentData}(x, name) <- value
 
-\S4method{[[}{ExperimentData}(x, i, j, ...)
+\S4method{[[}{ExperimentData,ANY,ANY}(x, i, j, ...)
 
-\S4method{[[}{ExperimentData}(x, i, j, ...) <- value
+\S4method{[[}{ExperimentData,ANY,ANY}(x, i, j, ...) <- value
 
 \S4method{$}{mSet}(x, name)
 
 \S4method{$}{mSet}(x, name) <- value
 
-\S4method{[[}{mSet}(x, i, j, ...)
+\S4method{[[}{mSet,ANY,ANY}(x, i, j, ...)
 
-\S4method{[[}{mSet}(x, i, j, ...) <- value
+\S4method{[[}{mSet,ANY,ANY}(x, i, j, ...) <- value
 }
 \arguments{
 \item{x}{An \code{\link{mSet-class}} or \code{\link{ExperimentData-class}} object.}

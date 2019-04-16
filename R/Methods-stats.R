@@ -13,7 +13,6 @@
 #' transformation.
 #' @param coef The number of coefficient to return by topTable.
 #' See \code{\link{topTable}}.
-#' @param p.value Should be the same as coef.
 #'
 #' @return A data.frame. See \code{\link{topTable}}
 #' @export
@@ -30,7 +29,7 @@ mSet_limma = function(object, design, transform = function(x){log2(x+1)},
 
     fit = limma::lmFit(data, design)
     fit_ebayes = limma::eBayes(fit)
-    res = limma::topTable(fit_ebayes, coef = coef, p.value = p.value,
+    res = limma::topTable(fit_ebayes, coef = coef,
                           number = nfeatures(object), sort.by = "none")
 
     res = res[,c("AveExpr", "logFC", "t", "P.Value", "adj.P.Val")]

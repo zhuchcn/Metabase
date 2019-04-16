@@ -18,8 +18,6 @@ transformation.}
 
 \item{coef}{The number of coefficient to return by topTable.
 See \code{\link{topTable}}.}
-
-\item{p.value}{Should be the same as coef.}
 }
 \value{
 A data.frame. See \code{\link{topTable}}
