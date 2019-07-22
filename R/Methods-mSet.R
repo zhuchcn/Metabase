@@ -134,9 +134,9 @@ setGeneric("subset_features",
 setMethod(
     "subset_samples", signature = c("mSet", "character"),
     function(x, samples){
-        x@conc_table = conc_table(x@conc_table[,samples])
+        x@conc_table = conc_table(x@conc_table[,samples, drop = FALSE])
         if(!is.null(x@sample_table))
-            x@sample_table = sample_table(x@sample_table[samples,])
+            x@sample_table = sample_table(x@sample_table[samples, , drop = FALSE])
         validObject(x)
         return(x)
     }
@@ -147,9 +147,9 @@ setMethod(
 setMethod(
     "subset_samples", signature = c("mSet", "logical"),
     function(x, samples){
-        x@conc_table = conc_table(x@conc_table[,samples])
+        x@conc_table = conc_table(x@conc_table[,samples, drop = FALSE])
         if(!is.null(x@sample_table))
-            x@sample_table = sample_table(x@sample_table[samples,])
+            x@sample_table = sample_table(x@sample_table[samples,,drop = FALSE])
         validObject(x)
         return(x)
     }
@@ -160,9 +160,9 @@ setMethod(
 setMethod(
     "subset_samples", signature = c("mSet", "integer"),
     function(x, samples){
-        x@conc_table = conc_table(x@conc_table[,samples])
+        x@conc_table = conc_table(x@conc_table[,samples, drop = FALSE])
         if(!is.null(x@sample_table))
-            x@sample_table = sample_table(x@sample_table[samples,])
+            x@sample_table = sample_table(x@sample_table[samples, drop = FALSE])
         validObject(x)
         return(x)
     }
@@ -176,9 +176,9 @@ setMethod(
 setMethod(
     "subset_features", signature = c("mSet", "character"),
     function(x, features){
-        x@conc_table = conc_table(x@conc_table[features,])
+        x@conc_table = conc_table(x@conc_table[features,,drop = FALSE])
         if(!is.null(x@feature_data))
-            x@feature_data = feature_data(x@feature_data[features,])
+            x@feature_data = feature_data(x@feature_data[features,,drop = FALSE])
         validObject(x)
         return(x)
     }
@@ -189,9 +189,9 @@ setMethod(
 setMethod(
     "subset_features", signature = c("mSet", "logical"),
     function(x, features){
-        x@conc_table = conc_table(x@conc_table[features,])
+        x@conc_table = conc_table(x@conc_table[features,,drop = FALSE])
         if(!is.null(x@feature_data))
-            x@feature_data = feature_data(x@feature_data[features,])
+            x@feature_data = feature_data(x@feature_data[features,,drop = FALSE])
         validObject(x)
         return(x)
     }
@@ -202,9 +202,9 @@ setMethod(
 setMethod(
     "subset_features", signature = c("mSet", "integer"),
     function(x, features){
-        x@conc_table = conc_table(x@conc_table[features,])
+        x@conc_table = conc_table(x@conc_table[features,,drop = FALSE])
         if(!is.null(x@feature_data))
-            x@feature_data = feature_data(x@feature_data[features,])
+            x@feature_data = feature_data(x@feature_data[features,,drop = FALSE])
         validObject(x)
         return(x)
     }

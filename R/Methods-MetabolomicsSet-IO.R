@@ -25,13 +25,9 @@ import_wcmc_excel = function(file,
                              sample_range,
                              feature_range,
                              InChIKey = NULL,
-                             experiment_type = "metabolomics",
-                             institute = NULL){
+                             experiment_type = "metabolomics"){
     if(!requireNamespace("readxl"))
         stop("The package 'readxl' is required for this funciton. Please install it.")
-
-    if(is.null(institute))
-        institute = "West Coast Metabolomics Center, CA"
 
     experiment_type = tolower(experiment_type)
 
@@ -73,29 +69,17 @@ import_wcmc_excel = function(file,
     rownames(conc_table) = rownames(feature_data)
     colnames(conc_table) = rownames(sample_table)
 
-    # experiment_data = MetabolomicsExperimentData(
-    #     institute = "West Coast Metabolomics Center"
-    # )
-
     if(experiment_type == "lipidomics"){
         object = LipidomicsSet(
             conc_table   = conc_table(conc_table),
             sample_table = sample_table(sample_table),
-            feature_data = feature_data(feature_data),
-            experiment_data = LipidomicsExperimentData(
-                institute = institute,
-                experiment_type = experiment_type
-            )
+            feature_data = feature_data(feature_data)
         )
     }else{
         object = MetabolomicsSet(
             conc_table   = conc_table(conc_table),
             sample_table = sample_table(sample_table),
-            feature_data = feature_data(feature_data),
-            experiment_data = MetabolomicsExperimentData(
-                institute = institute,
-                experiment_type = experiment_type
-            )
+            feature_data = feature_data(feature_data)
         )
     }
 

@@ -35,27 +35,39 @@ lipid_name_formater = function(x){
     x = gsub("Cholesteryl ester\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}.*", "CE \\1", x)
     x = gsub("CE\\s*\\(*(\\d{2}\\:\\d{1})\\)*.*", "CE \\1", x)
     # DG
+    x = gsub('DAG', 'DG', x)
+    x = gsub('Diacylglycerol', 'DG', x)
     x = gsub("DG\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "DG \\1", x)
-    x = gsub("Diacylglycerol\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "DG \\1", x)
+    # MG
+    x = gsub('MAG', "MG", x)
+    x = sub("MG\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}", "MG \\1", x)
     # FA
     x = gsub("FA\\s*\\({,1}(\\d{1,2}\\:\\d{1})\\){,1}.*", "FA \\1", x)
-    # Ceramide
-    x = gsub("^Ceramide\\s{,1}\\({,1}d(\\d{1,2}\\:\\d{1})\\){,1}.*", "Ceramide \\1 d",x)
-    x = gsub("^Cer{,1}\\({,1}d(\\d{2}\\:\\d{1})\\){,1}.*", "Ceramide \\1 d",x)
+    # DCER
+    x = gsub('DCER\\(([0-9]{1,2}:[0-9]{1})\\)', 'Dihydroceramide \\1', x)
+    # HCER
+    x = gsub('HCER\\(([0-9]{1,2}:[0-9]{1})\\)', 'Hexosylceramide \\1', x)
+
     # Gal-Gal-Cer
+    x = gsub("LCER", 'Lactosylceramide', x)
     x = gsub("^Gal-Gal-Cer\\s*\\({0,1}d(\\d{1,2}:\\d{1})\\){,1}.*", "Gal-Gal-Cer \\1 d",x)
-    x = gsub("^Lactosylceramide\\s*\\(d{0,1}d(\\d{1,2}:\\d{1})\\){,1}.*", "Gal-Gal-Cer \\1 d",x)
+    x = gsub("^Lactosylceramide\\s*\\(*d*(\\d{1,2}:\\d{1})\\)*.*", "Gal-Gal-Cer \\1 d",x)
     # GlcCer
     x = gsub("GlcCer\\s*\\(d(\\d{1,2}:\\d{1}).*", "GlcCer \\1 d", x)
+    # Ceramide
+    x = gsub("CERAMIDE", 'Ceramide', x)
+    x = gsub('CER', 'Ceramide', x)
+    x = gsub("^Ceramide\\s*\\(*d*(\\d{1,2}:\\d{1})\\)*.*", "Ceramide \\1 d",x)
+    x = gsub("^Cer{,1}\\({,1}d(\\d{2}\\:\\d{1})\\){,1}.*", "Ceramide \\1 d",x)
     # LPC, LPE, PC, and PE
     x = gsub("(L{0,1}P[CEASI])\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\2", x)
-    x = gsub("(L{0,1}P[CEASI])\\s*\\(*([op]{1})-(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\3 \\2", x)
+    x = gsub("(L{0,1}P[CEASI])\\s*\\(*([opOP]{1})-(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\3 \\2", x)
     x = gsub("Plasmenyl-(L{0,1}P[CEASI])\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*", "\\1 \\2 p", x)
     # OxPC
     x = gsub("OxPC\\s*\\(*(\\d{2}:\\d{1})\\)*.*", "PC \\1 ox", x)
     # SM
-    x = gsub("SM\\s*\\(*d(\\d{1,2}:\\d{1})\\)*.*","SM \\1 d", x)
-    # SM
+    x = gsub("SM\\s*\\(*d*(\\d{1,2}:\\d{1})\\)*.*","SM \\1 d", x)
+    # TG
     x = gsub("TG\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*","TG \\1", x)
     x = gsub("TAG\\s*\\(*(\\d{1,2}:\\d{1})\\)*.*","TG \\1", x)
     return(x)
@@ -88,10 +100,17 @@ nCarbons = function(x){
 #' @export
 #' @author Chenghao Zhu
 nFattyAcyls = function(x){
-    class_acyls = c(3, rep(2, 11), rep(1, 8), 0)
-    names(class_acyls) = c("TG", "PC", "PE", "PS", "PI", "PA", "PG", "SM", "Ceramide", "GlcCer", "Gal-Gal-Cer", "DG", "LPC", "LPE", "LPS", "LPI", "LPA", "FA", "CE", "MG", "Cholesterol")
     class = str_split_fixed(x, " ", 2)[,1]
-    as.integer(class_acyls[class])
+    return(ifelse(
+        class == 'Cholesterol', 0,
+        ifelse(
+            class == 'TG', 3,
+            ifelse(
+                class %in% c('LPC', "LPE", "LPG", "LPI", "LPA", "MG", "FA"),
+                1, 2
+            )
+        )
+    ))
 }
 ################################################################################
 #' @title Get the number of double bonds
@@ -150,15 +169,15 @@ summarize_ACL = function(object, name, class){
     class = object@feature_data[, class]
 
     mat1 = apply(object@conc_table * nCB, 2, function(col){
-        tapply(col, class, sum)
+        tapply(col, class, function(x) sum(x, na.rm = TRUE))
     })
     mat2 = apply(object@conc_table * nFA, 2, function(col){
-        tapply(col, class, sum)
+        tapply(col, class, function(x) sum(x, na.rm = TRUE))
     })
     mat = mat1 / mat2
     mat = mat[rownames(mat) != "Cholesterol",]
-    Overall = apply(object@conc_table * nCB, 2, sum) /
-        apply(object@conc_table * nFA, 2, sum)
+    Overall = apply(object@conc_table * nCB, 2, function(x) sum(x, na.rm = TRUE)) /
+        apply(object@conc_table * nFA, 2, function(x) sum(x, na.rm = TRUE))
     mat = rbind(Overall, mat)
     LipidomicsSet(conc_table = conc_table(mat),
                   sample_table = sample_table(object))
@@ -204,15 +223,15 @@ summarize_EOD = function(object, name, class){
     class =object@feature_data[, class]
 
     mat1 = apply(object@conc_table * nDB, 2, function(col){
-        tapply(col, class, sum)
+        tapply(col, class, function(x) sum(x, na.rm = TRUE))
     })
     mat2 = apply(object@conc_table * nCB, 2, function(col){
-        tapply(col, class, sum)
+        tapply(col, class, function(x) sum(x, na.rm = TRUE))
     })
     mat = mat1 / mat2 * 18
     mat = mat[rownames(mat) != "Cholesterol",]
-    Overall = apply(object@conc_table * nDB, 2, sum)/
-        apply(object@conc_table * nCB, 2, sum) * 18
+    Overall = apply(object@conc_table * nDB, 2, function(x) sum(x, na.rm = TRUE))/
+        apply(object@conc_table * nCB, 2, function(x) sum(x, na.rm = TRUE)) * 18
     mat = rbind(Overall, mat)
     LipidomicsSet(conc_table = conc_table(mat),
                   sample_table = sample_table(object))
@@ -241,7 +260,7 @@ summarize_odd_chain = function(object, name, class){
     nCB = nCarbons(object@feature_data[, name])
 
     object = subset_features(object, nCB %% 2 == 1)
-    Overall = apply(object@conc_table, 2, sum)
+    Overall = apply(object@conc_table, 2, function(x) sum(x, na.rm = TRUE))
     object = summarize_features(object, class)
 
     conc_table = rbind(Overall, object@conc_table) %>%
@@ -274,32 +293,50 @@ summarize_lipid_ratios = function(object, name, class){
         stop("[ Metabase ] The lipid class variable " %+% class %+% " is not found. Please varify.", call. = FALSE)
 
     object = summarize_features(object, class)
-    edata = conc_table(object)
+    featureNames(object) = tolower(featureNames(object))
+    edata = object@conc_table
 
-    X = c("CE", "PC", "PE", "TG", "SM", "CE")
-    Y = c("Cholesterol", "LPC", "LPE", "DG", "Cer", "TG")
+    keys = list(
+        c('ce', "cholesterol"),
+        c("pc", "lpc"),
+        c("pe", "lpe"),
+        c("pg", 'lpg'),
+        c("pi", "lpi"),
+        c("pa", "lpa"),
+        c("tg", "dg"),
+        c("tag", "dag"),
+        c("sm", "cer"),
+        c("sm", "ceremide"),
+        c("tg", "ce"),
+        c("tag", "ce")
+    )
 
     ratios = NULL
-    for(i in seq_along(X)){
-        if( X[i] %in% rownames(edata) & Y[i] %in% rownames(edata)){
-            ratios = rbind(ratios, edata[X[i],]/edata[Y[i],])
-            rownames(ratios)[nrow(ratios)] = X[i] %+% "/" %+% Y[i]
+    for(key in keys){
+        if( key[1] %in% rownames(edata) & key[2] %in% rownames(edata)){
+            ratios = rbind(ratios, edata[key[1],]/edata[key[2],])
+            rownames(ratios)[nrow(ratios)] = key[1] %+% "/" %+% key[2]
         }
     }
 
-    surface_lipids = c("PC", "PE", "PS", "PI", "PG", "PA", "LPC", "LPE", "LPS", "LPI", "LPA", "DG", "SM", "Cer", "MG", "Cholesterol")
-    core_lipids = c("CE", "TG")
-    pl = c("PC", "PE", "PS", "PI", "PG", "PA", "LPC", "LPE", "LPS", "LPI", "LPA", "SM")
+    surface_lipids = c(
+        "pc", "pe", "ps", "pi", "pg", "pa", "lpc", "lpe", "lps", "lpi", "lpa",
+        "dg", "dag", "sm", "cer", "ceramide", "mg", "mag", "cholesterol",
+        "dcer", 'ffa', 'hcer', 'lcer'
+    )
+    core_lipids = c("ce", "tg", 'tag')
+    pl = c("pc", "pe", "ps", "pi", "pg", "pa", "lpc", "lpe", "lps", "lpi",
+           "lpa", "sm")
 
     surface = colSums(edata[rownames(edata) %in% surface_lipids,])
     core = colSums(edata[rownames(edata) %in% core_lipids,])
     pl = colSums(edata[rownames(edata) %in% pl,])
-    ratios = rbind(edata["PC",]/pl, ratios)
-    ratios = rbind(edata["SM",]/pl, ratios)
-    ratios = rbind(edata["PC",]/surface, ratios)
-    ratios = rbind(edata["SM",]/surface, ratios)
+    ratios = rbind(edata["pc",]/pl, ratios)
+    ratios = rbind(edata["sm",]/pl, ratios)
+    ratios = rbind(edata["pc",]/surface, ratios)
+    ratios = rbind(edata["sm",]/surface, ratios)
     ratios = rbind(surface / core, ratios)
-    rownames(ratios)[1:5] = c("surface/core", "SM/surface", "PC/surface", "SM/PL", "PC/PL")
+    rownames(ratios)[1:5] = c("surface/core", "sm/surface", "pc/surface", "sm/pl", "pc/pl")
 
     LipidomicsSet(conc_table = conc_table(ratios),
                   sample_table = sample_table(object))
